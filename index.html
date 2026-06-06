@@ -1,263 +1,760 @@
 <!DOCTYPE html>
 <html lang="ta">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SAHAYARAJ-2026</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
-    <style>
-        :root { --p-bg: #0c40bb; --n-col: #ffffff; --out: #54301d; --btm: #0b08d4; --c-let: #e32b2b; --c-num: #1e40af; }
-        body { background-color: #475569; font-family: 'Arial Black', sans-serif; overflow-x: hidden; }
-        * { font-weight: 950 !important; }
-        
-        #loginOverlay { background: linear-gradient(135deg, #1e3a8a 0%, #0f172a 100%); display: flex; align-items: center; justify-content: center; position: fixed; inset: 0; z-index: 2000; }
-        .login-box { background: white; padding: 30px; border-radius: 30px; border: 8px solid #000; width: 95%; max-width: 400px; box-shadow: 0 20px 0 #000; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Finance Manager Pro</title>
+<style>
+:root {
+    --theme-color: #ffd700;
+    --theme-gradient: linear-gradient(145deg, #ffd700, #333333);
+    --app-width: 500px;
+    --app-height: 100vh;
+    --app-font-size: 16px;
+    --app-font-weight: normal;
+}
+body{margin:0;font-family:'Segoe UI',Arial,sans-serif;background:#111;color:white;user-select:none;-webkit-user-select:none; font-size: var(--app-font-size); font-weight: var(--app-font-weight);}
 
-        .main-app-box { border: 10px solid var(--out); margin: 10px auto; border-radius: 40px; background: #f1f5f9; overflow-x: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
-        .premium-header { background-color: var(--p-bg); padding: 25px; border-bottom: 10px solid var(--btm); position: relative; }
-        
-        .cat-card { background: #fff; border: 4px solid var(--out); border-radius: 20px; text-align: center; padding: 15px 10px; position: relative; box-shadow: 8px 8px 0px var(--out); transition: 0.2s; cursor: pointer; }
-        .cat-card:active { transform: translate(4px, 4px); box-shadow: 2px 2px 0px var(--out); }
+.wrapper{
+    max-width: var(--app-width); 
+    margin:auto; 
+    padding-bottom: 50px; 
+    background:#111; 
+    min-height: var(--app-height); 
+    height: var(--app-height);
+    overflow-y: auto;
+    transition: max-width 0.3s, min-height 0.3s, height 0.3s;
+    border: 1px solid #222;
+}
 
-        .btn-style { border-bottom: 6px solid rgba(0,0,0,0.4); color: #fff !important; cursor: pointer; transition: 0.1s; text-transform: uppercase; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
-        .btn-style:active { transform: translateY(3px); border-bottom-width: 3px; }
-        
-        .cp-card { background: #fff; width: 98%; max-width: 1300px; border-radius: 40px; padding: 20px; border: 10px solid #000; max-height: 95vh; overflow-y: auto; }
-        .setting-row { display: flex; justify-content: space-between; align-items: center; background: #f8fafc; padding: 4px 10px; border: 2px solid #000; border-radius: 10px; margin-bottom: 2px; font-size: 11px; }
-        .setting-row input { border: 1px solid #ccc; text-align: center; border-radius: 5px; }
-        .filter-btn-active { background-color: #ef4444 !important; border: 3px solid #000 !important; box-shadow: none !important; transform: translateY(2px); }
-        .section-title { background: #1e3a8a; color: white; padding: 2px 10px; font-size: 10px; text-transform: uppercase; margin-top: 10px; }
-        
-        .action-bar { display: flex; width: 100%; background: #000; padding: 8px; gap: 8px; }
-        .action-btn { flex: 1; padding: 12px 0; border: 3px solid #fff; color: #fff; font-size: 14px; text-align: center; cursor: pointer; border-radius: 12px; transition: 0.2s; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 0 #444; }
-        .action-btn.active { background: #ffeb3b; color: #000; border-color: #000; box-shadow: none; transform: translateY(4px); }
-        .bell-btn { background: #facc15; color: #000; }
-        .hidden { display: none !important; }
-    </style>
+header{background: var(--theme-gradient); color:#111; text-align:center; padding:18px; font-size:calc(var(--app-font-size) + 4px); font-weight:bold; box-shadow: 0 4px 10px rgba(0,0,0,0.5); position: relative;}
+
+.indicator-container {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+.g-led {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: #222;
+    color: #ff4444;
+    border: 2px solid #ff4444;
+    box-shadow: 0 0 10px #ff4444, inset 0 0 5px #ff4444;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 900;
+    transition: 0.3s;
+}
+.g-led.connected {
+    color: #00ff00;
+    border-color: #00ff00;
+    box-shadow: 0 0 15px #00ff00, inset 0 0 5px #00ff00, 0 0 5px #fff;
+}
+
+.dashboard{display:grid;grid-template-columns: repeat(2, 1fr);gap:10px;padding:10px;}
+.stat-box{background:#222;padding:15px 10px;border-radius:10px;text-align:center;border:1px solid #333;}
+.stat-box.red-border{border: 2px solid #e53935;}
+.stat-box small{color: #aaa; font-size: calc(var(--app-font-size) - 3px); text-transform: uppercase; font-weight: bold; display: block; margin-bottom: 5px;}
+.stat-box h2{margin:0; font-size: calc(var(--app-font-size) + 4px); color: var(--theme-color); font-weight: 900;}
+
+.search-container{padding:10px;}
+.search-input{width:100%; padding:12px; border-radius:10px; border:1px solid var(--theme-color); background:#222; color:white; box-sizing: border-box; font-size: var(--app-font-size); font-weight: var(--app-font-weight);}
+
+.top-buttons {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 4px;
+    padding: 0 10px;
+    margin: 10px 0;
+}
+.top-buttons button {
+    padding: 12px 2px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: calc(var(--app-font-size) - 4px);
+    transition: 0.3s;
+    text-align: center;
+    box-sizing: border-box;
+    white-space: nowrap;
+}
+.gold{background: var(--theme-color); color:#111;}
+
+.user-card{width:calc(100% - 20px);margin:10px auto;padding:15px;border-radius:15px;background:#222;cursor:pointer;border: 1px solid #333;box-sizing: border-box; position: relative;}
+.user-card.redbg{background:linear-gradient(145deg, #8b0000, #5a0000); border-color: #ff4444;}
+.row{display:flex;justify-content:space-between; align-items:center; font-size: var(--app-font-size); padding-right: 35px;}
+
+.menu-dot-btn { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: transparent; color: var(--theme-color); font-size: 24px; border: none; padding: 5px; cursor: pointer; z-index: 10;}
+
+.profile-header{background:#222; padding:15px 20px; border-bottom: 2px solid var(--theme-color); margin-bottom: 5px; position: relative;}
+.profile-header h2{margin:0 0 15px 0; color: var(--theme-color); text-align: center; font-size: calc(var(--app-font-size) + 8px); padding-top: 5px;}
+.prof-header-buttons{display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 10px;}
+.prof-details-row{display: flex; justify-content: space-between; align-items: center; margin-top: 10px;}
+
+#profMobile { margin: 0; font-size: var(--app-font-size); color: var(--theme-color); font-weight: bold; }
+#profBalance { margin: 0; font-size: calc(var(--app-font-size) + 4px); color: #ffffff; font-weight: 900; }
+
+.table-container{overflow-x:auto; padding:10px;}
+table{width:100%;border-collapse:collapse; background: #1a1a1a; border-radius: 10px;}
+th,td{padding:10px 4px;text-align:center; border-bottom: 1px solid #444; font-size: calc(var(--app-font-size) - 2px); font-weight: var(--app-font-weight);}
+th{background:#333; color: var(--theme-color); font-weight: bold;}
+
+.credit-row{background-color: #1f7a1f !important; color: white !important;}
+.debit-row{background-color: #b91c1c !important; color: white !important;}
+.pending-row{background-color: #2c2c2c; color: var(--theme-color);}
+
+.popup-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);z-index:1000;justify-content:center;align-items:center;}
+.popup-content{background:#222;padding:22px;border-radius:20px;text-align:center;border:2px solid var(--theme-color);width:90%; max-width: 380px; max-height: 85vh; overflow-y: auto; color: white;}
+
+input[type="date"], input[type="text"], input[type="number"], select{width:100%;margin:8px 0;padding:12px;border:none;border-radius:8px;background:#333;color:white; box-sizing: border-box; font-size: var(--app-font-size);}
+.hidden{display:none;}
+
+.setting-row { display: flex; justify-content: space-between; align-items: center; margin: 15px 0; text-align: left; font-size: calc(var(--app-font-size) - 1px); }
+.switch { position: relative; display: inline-block; width: 46px; height: 24px; }
+.switch input { opacity: 0; width: 0; height: 0; }
+.slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #444; transition: .3s; border-radius: 24px; }
+.slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .3s; border-radius: 50%; }
+input:checked + .slider { background-color: #1f7a1f; }
+input:checked + .slider:before { transform: translateX(22px); }
+
+.color-presets { 
+    display: grid; 
+    grid-template-columns: repeat(6, 1fr); 
+    gap: 8px; 
+    margin-top: 8px; 
+    background: #1a1a1a;
+    padding: 10px;
+    border-radius: 12px;
+    border: 1px solid #333;
+}
+.color-dot { width: 100%; aspect-ratio: 1; border-radius: 50%; border: 1px solid rgba(255,255,255,0.4); cursor: pointer; transition: 0.2s; box-sizing: border-box;}
+.color-dot:hover { transform: scale(1.15); border-color: #fff; box-shadow: 0 0 8px rgba(255,255,255,0.8); }
+
+#loading { display:none; position: fixed; top: 10px; right: 10px; background: var(--theme-color); color: #111; padding: 8px 15px; border-radius: 20px; font-weight: bold; z-index: 10000; font-size: 13px;}
+</style>
 </head>
-<body onload="init()">
+<body>
 
-<div id="loginOverlay">
-    <div class="login-box text-center">
-        <h2 class="text-3xl mb-6 italic uppercase">SAHA LOGIN</h2>
-        <input type="text" id="logUser" placeholder="USER ID" class="w-full p-4 mb-4 border-4 border-black rounded-xl text-center uppercase">
-        <input type="password" id="logPin" placeholder="PASSWORD" class="w-full p-4 mb-6 border-4 border-black rounded-xl text-center">
-        <button onclick="handleLogin()" class="w-full bg-blue-600 py-4 rounded-xl text-white text-xl btn-style">LOG IN ✅</button>
-        <p class="text-[10px] mt-4 opacity-50">V6.6 SECURE ACCESS</p>
+<div id="loading">SAVE...</div>
+
+<div class="wrapper">
+    <header>
+        <span id="headerTitleText">Finance Manager Pro</span>
+        <div class="indicator-container">
+            <div id="ledLight" class="g-led connected">G</div>
+        </div>
+    </header>
+
+    <div id="mainScreen">
+        <div class="search-container" id="searchBoxWrapper">
+            <input type="text" id="userSearch" class="search-input" placeholder="தேடவும்..." oninput="renderUsers()">
+        </div>
+
+        <div class="dashboard" id="dashboardWrapper">
+            <div class="stat-box"><small>Total Users</small><h2 id="totalUsers">0</h2></div>
+            <div class="stat-box"><small>Total Balance</small><h2 id="totalBalance">0</h2></div>
+            <div class="stat-box red-border"><small style="color:#ff5252;">Red Users</small><h2 id="redUsersCount">0</h2></div>
+            <div class="stat-box red-border"><small style="color:#ff5252;">10% Collection</small><h2 id="tenPercentTotal">0</h2></div>
+        </div>
+
+        <div class="top-buttons">
+            <button class="gold" onclick="addUser()">+ User</button>
+            <button class="gold" onclick="fetchFromCloud()">🔄 Reset</button>
+            <button class="gold" onclick="exportData()">Export</button>
+            <button class="gold" onclick="document.getElementById('importFile').click()">Import</button>
+            <button style="background:#444; color:white;" onclick="openSettingsPopup()">⚙️ Set</button>
+            <input type="file" id="importFile" hidden onchange="importData(event)">
+        </div>
+
+        <div id="userList"></div>
     </div>
-</div>
 
-<div id="appPage" class="hidden">
-    <div id="mainContainer" class="main-app-box mx-auto">
-        <div class="premium-header">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center gap-4">
-                    <button id="backBtn" onclick="logout()" class="bg-red-600 w-12 h-12 rounded-full border-4 border-black text-white text-2xl shadow-lg">⬅</button>
-                    <div>
-                        <h1 id="dispTitle" class="text-4xl italic uppercase" style="color: var(--n-col); text-shadow: 3px 3px 0 #000;">SAHAYARAJ-2026</h1>
-                        <div id="liveDateTime" class="text-yellow-300 font-bold" style="font-size: 14px;"></div>
-                        <p id="startDateDisplay" class="text-xs text-white opacity-80"></p>
-                        <p id="expiryDisplay" class="text-yellow-200 font-bold text-xs mt-1"></p>
-                    </div>
-                </div>
-                <div class="flex items-center gap-6">
-                    <div class="text-right text-white">
-                        <p class="text-[10px] opacity-70">ID: <span id="currentUserDisplay" class="text-yellow-400"></span></p>
-                        <h2 id="mainTotal" class="text-4xl" style="text-shadow: 2px 2px 0 #000;">₹0</h2>
-                    </div>
-                    <button onclick="openSettings()" class="text-5xl text-white hover:rotate-90 transition-transform">⚙️</button>
-                </div>
+    <div id="userScreen" class="hidden">
+        <div class="profile-header">
+            <div class="prof-header-buttons">
+                <button class="gold" onclick="goBack()" style="padding: 6px 12px;">← Back</button>
+                <button class="gold" onclick="openEntryForm()" style="padding: 6px 12px;">+ Entry</button>
+            </div>
+            <h2 id="profName"></h2>
+            <div class="prof-details-row">
+                <p id="profMobile"></p>
+                <h3 id="profBalance"></h3>
             </div>
         </div>
 
-        <div class="action-bar">
-            <div class="action-btn bell-btn" onclick="document.getElementById('bellStartDate').showPicker()">🔔 BELL<input type="date" id="bellStartDate" onchange="setStartingDate()" class="absolute opacity-0 pointer-events-none w-0"></div>
-            <div id="viewCR" onclick="setViewMode('CR')" class="action-btn active">CREDIT (+)</div>
-            <div id="viewDR" onclick="setViewMode('DR')" class="action-btn">DEBIT (-)</div>
-            <div id="viewBOTH" onclick="setViewMode('BOTH')" class="action-btn">BOTH</div>
-        </div>
-
-        <div class="p-4">
-            <div id="catGrid" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-5 mb-4"></div>
-            
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <div class="bg-white p-6 rounded-3xl border-4 border-black shadow-[10px_10px_0px_#000]">
-                    <h3 class="text-xl border-b-4 border-green-600 mb-4 italic uppercase">New Entry</h3>
-                    <div class="grid grid-cols-2 gap-4">
-                        <input type="hidden" id="editId"><input type="date" id="eDate" class="border-2 border-black p-3 rounded-xl">
-                        <input type="tel" id="eMob" placeholder="Mobile" class="border-2 border-black p-3 rounded-xl">
-                        <select id="eCat" class="border-2 border-black p-3 rounded-xl"></select>
-                        <input type="text" id="eDesc" placeholder="Remark" class="border-2 border-black p-3 rounded-xl">
-                        <input type="number" id="eAmt" placeholder="Amount" class="border-2 border-black p-3 rounded-xl">
-                        <select id="eType" class="border-2 border-black p-3 rounded-xl"><option value="CR">IN (+)</option><option value="DR">OUT (-)</option></select>
-                    </div>
-                    <button onclick="saveData()" id="saveBtn" class="w-full py-4 mt-6 rounded-xl text-xl btn-style bg-green-600">SAVE ✅</button>
-                </div>
-
-                <div class="bg-white p-6 rounded-3xl border-4 border-black shadow-[10px_10px_0px_#000]">
-                    <h3 class="text-xl border-b-4 border-blue-600 mb-4 italic uppercase">Search & Tools</h3>
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-2 mb-4">
-                        <input type="date" id="fDate" class="text-xs border-2 border-black p-2"><input type="date" id="tDate" class="text-xs border-2 border-black p-2">
-                        <input type="tel" id="sMob" placeholder="Mobile" class="text-xs border-2 border-black p-2"><input type="text" id="sDesc" placeholder="Remark Search" class="text-xs border-2 border-black p-2">
-                    </div>
-                    <div id="filterCatList" class="flex flex-wrap gap-2 mb-4"></div>
-                    <div class="grid grid-cols-4 gap-3">
-                        <button id="pdfBtn" onclick="downloadPDF()" class="bg-orange-600 py-3 rounded-lg btn-style text-[10px]">PDF</button>
-                        <button id="waBtn" onclick="sendWhatsApp()" class="bg-green-600 py-3 rounded-lg btn-style text-[10px]">W/APP</button>
-                        <button id="impBtn" onclick="document.getElementById('impFile').click()" class="bg-blue-600 py-3 rounded-lg btn-style text-[10px]">IMPORT</button>
-                        <button id="expBtn" onclick="exportData()" class="bg-purple-600 py-3 rounded-lg btn-style text-[10px]">EXPORT</button>
-                        <button onclick="promptAddCat()" class="bg-cyan-600 py-3 rounded-lg btn-style text-[10px]">ADD CAT</button>
-                        <button onclick="promptDelCat()" class="bg-pink-600 py-3 rounded-lg btn-style text-[10px]">DEL CAT</button>
-                        <button onclick="promptDriveUrl()" class="bg-yellow-600 py-3 rounded-lg btn-style text-[10px]">DRIVE URL</button>
-                        <button id="delAllBtn" onclick="deleteAll()" class="bg-red-600 py-3 rounded-lg btn-style text-[10px]">DEL ALL</button>
-                    </div>
-                    <input type="file" id="impFile" class="hidden" onchange="importData(event)">
-                    <button onclick="refresh()" class="w-full bg-slate-800 text-white py-4 mt-4 rounded-xl btn-style">SEARCH DATA 🔎</button>
-                </div>
-            </div>
-
-            <div class="mt-8 bg-white border-4 border-black rounded-3xl overflow-hidden shadow-2xl">
-                <table class="w-full text-sm">
-                    <thead class="bg-black text-white"><tr><th class="p-3">DATE</th><th class="p-3">MOBILE</th><th class="p-3">CAT</th><th class="p-3">REMARK</th><th class="p-3 text-right">AMOUNT</th><th class="p-3 text-center">ACTION</th></tr></thead>
-                    <tbody id="resTable" class="text-center"></tbody>
-                </table>
-            </div>
+        <div class="table-container">
+            <table>
+                <thead><tr><th>Date</th><th>Desc</th><th>Cr</th><th>Db</th><th>Bal</th></tr></thead>
+                <tbody id="transactionTable"></tbody>
+            </table>
         </div>
     </div>
 </div>
 
-<div id="setModal" class="hidden fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-2">
-    <div class="cp-card">
-        <div class="flex justify-between items-center mb-4"><h2 class="text-2xl uppercase">Control Panel</h2><button onclick="closeSettings()" class="bg-red-600 text-white px-6 py-2 rounded-xl btn-style">CLOSE</button></div>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div><p class="section-title">Colors</p><div class="setting-row"><span>Banner</span><input type="color" id="setHeadCol"></div><div class="setting-row"><span>Name</span><input type="color" id="setNameCol"></div><div class="setting-row"><span>Out</span><input type="color" id="setOutCol"></div></div>
-            <div><p class="section-title">Text</p><div class="setting-row"><span>Title</span><input type="text" id="setTitle" class="w-24 text-[10px]"></div><div class="setting-row"><span>Entry Size</span><input type="number" id="setFsEnt" class="w-12"></div></div>
-            <div><p class="section-title">Security</p><div class="setting-row"><span>Admin PIN</span><input type="password" id="setAdminPin" class="w-16"></div></div>
+<div id="settingsPopup" class="popup-overlay" onclick="closeSettingsPopup()">
+    <div class="popup-content" onclick="event.stopPropagation()">
+        <h3 style="color:var(--theme-color); margin-top:0;">⚙️ App Settings</h3>
+        
+        <div style="text-align:left; margin-bottom:12px;">
+            <label style="font-size:14px; color:#aaa;">பேனர் பெயர்:</label>
+            <input type="text" id="setAppTitle" oninput="applySettings()">
         </div>
-        <button onclick="saveSettings()" class="w-full bg-blue-700 text-white py-4 mt-6 rounded-xl text-2xl btn-style">SAVE ✅</button>
+
+        <div style="text-align:left; margin-bottom:12px;">
+            <label style="font-size:14px; color:#aaa;">ஆப் அகலம் (Width): <span id="widthVal">500</span>px</label>
+            <input type="range" id="setAppWidth" min="360" max="800" step="10" style="width:100%; margin-top:5px;" oninput="applySettings()">
+        </div>
+
+        <div style="text-align:left; margin-bottom:12px;">
+            <label style="font-size:14px; color:#aaa;">ஆப் உயரம் (Height): <span id="heightVal">100</span>%</label>
+            <input type="range" id="setAppHeight" min="50" max="100" step="5" style="width:100%; margin-top:5px;" oninput="applySettings()">
+        </div>
+
+        <div style="text-align:left; margin-bottom:12px;">
+            <label style="font-size:14px; color:#aaa;">எழுத்து அளவு (Font Size): <span id="fontSizeVal">16</span>px</label>
+            <input type="range" id="setAppFontSize" min="12" max="24" step="1" style="width:100%; margin-top:5px;" oninput="applySettings()">
+        </div>
+
+        <div style="text-align:left; margin-bottom:12px;">
+            <label style="font-size:14px; color:#aaa;">எழுத்து வடிவம் (Style):</label>
+            <select id="setAppFontWeight" onchange="applySettings()" style="margin-top:5px;">
+                <option value="normal">Normal (லேசான எழுத்து)</option>
+                <option value="bold">Bold (கனமான எழுத்து)</option>
+            </select>
+        </div>
+
+        <div style="text-align:left; margin-bottom:15px;">
+            <label style="font-size:14px; color:#aaa;">தீம் கலர் மாற்றம் (25+ வண்ணங்கள்):</label>
+            <div class="color-presets">
+                <div class="color-dot" style="background:#ffd700;" onclick="setPresetColor('#ffd700')" title="Gold"></div>
+                <div class="color-dot" style="background:#ffb300;" onclick="setPresetColor('#ffb300')" title="Amber"></div>
+                <div class="color-dot" style="background:#ff9100;" onclick="setPresetColor('#ff9100')" title="Orange"></div>
+                <div class="color-dot" style="background:#ff3d00;" onclick="setPresetColor('#ff3d00')" title="Deep Orange"></div>
+                <div class="color-dot" style="background:#e53935;" onclick="setPresetColor('#e53935')" title="Red"></div>
+                <div class="color-dot" style="background:#d81b60;" onclick="setPresetColor('#d81b60')" title="Pink"></div>
+                <div class="color-dot" style="background:#8e24aa;" onclick="setPresetColor('#8e24aa')" title="Purple"></div>
+                <div class="color-dot" style="background:#5e35b1;" onclick="setPresetColor('#5e35b1')" title="Deep Purple"></div>
+                <div class="color-dot" style="background:#3949ab;" onclick="setPresetColor('#3949ab')" title="Indigo"></div>
+                <div class="color-dot" style="background:#1e88e5;" onclick="setPresetColor('#1e88e5')" title="Blue"></div>
+                <div class="color-dot" style="background:#00b0ff;" onclick="setPresetColor('#00b0ff')" title="Light Blue"></div>
+                <div class="color-dot" style="background:#00e5ff;" onclick="setPresetColor('#00e5ff')" title="Cyan"></div>
+                <div class="color-dot" style="background:#00edd6;" onclick="setPresetColor('#00edd6')" title="Teal"></div>
+                <div class="color-dot" style="background:#00a86b;" onclick="setPresetColor('#00a86b')" title="Jade Green"></div>
+                <div class="color-dot" style="background:#4caf50;" onclick="setPresetColor('#4caf50')" title="Green"></div>
+                <div class="color-dot" style="background:#7cb342;" onclick="setPresetColor('#7cb342')" title="Light Green"></div>
+                <div class="color-dot" style="background:#c0ca33;" onclick="setPresetColor('#c0ca33')" title="Lime"></div>
+                <div class="color-dot" style="background:#d4af37;" onclick="setPresetColor('#d4af37')" title="Metallic Gold"></div>
+                <div class="color-dot" style="background:#b8860b;" onclick="setPresetColor('#b8860b')" title="Dark Golden"></div>
+                <div class="color-dot" style="background:#a0522d;" onclick="setPresetColor('#a0522d')" title="Sienna"></div>
+                <div class="color-dot" style="background:#808080;" onclick="setPresetColor('#808080')" title="Grey"></div>
+                <div class="color-dot" style="background:#90a4ae;" onclick="setPresetColor('#90a4ae')" title="Blue Grey"></div>
+                <div class="color-dot" style="background:#78909c;" onclick="setPresetColor('#78909c')" title="Slate"></div>
+                <input type="color" id="setThemeColor" style="width:100%; height:100%; border:none; background:transparent; cursor:pointer; grid-column: span 1;" oninput="applySettings()" title="Custom Color">
+            </div>
+        </div>
+
+        <hr style="border-color:#333;">
+
+        <div class="setting-row">
+            <span>Dashboard பாக்ஸ் காட்டு</span>
+            <label class="switch"><input type="checkbox" id="switchDash" checked onchange="applySettings()"><span class="slider"></span></label>
+        </div>
+
+        <div class="setting-row">
+            <span>Search பார் காட்டு</span>
+            <label class="switch"><input type="checkbox" id="switchSearch" checked onchange="applySettings()"><span class="slider"></span></label>
+        </div>
+
+        <hr style="border-color:#333;">
+        
+        <button style="background:#e53935; color:white; width:100%; margin-top:5px; padding:12px; font-weight:bold; border:none; border-radius:10px; cursor:pointer;" onclick="allDeleteWithExport()">⚠️ All Delete</button>
+        <button class="gold" style="width:100%; margin-top:12px; padding:12px;" onclick="closeSettingsPopup()">Done</button>
+    </div>
+</div>
+
+<div id="entryPopup" class="popup-overlay">
+    <div class="popup-content">
+        <h3 style="color:var(--theme-color); margin-top:0;">New Entry</h3>
+        <input type="date" id="tDate">
+        <input type="text" id="tDesc" placeholder="Description">
+        <input type="number" id="tCredit" placeholder="Credit">
+        <input type="number" id="tDebit" placeholder="Debit">
+        <div style="display:flex; gap:10px; margin-top:10px;">
+            <button class="gold" onclick="saveTransaction()" style="flex:1;">Save</button>
+            <button style="background:#555; color:white; flex:1;" onclick="closeEntryForm()">Close</button>
+        </div>
+    </div>
+</div>
+
+<div id="actionPopup" class="popup-overlay" onclick="closeActionPopup()">
+    <div class="popup-content" onclick="event.stopPropagation()">
+        <h3 id="popupTitle" style="color:var(--theme-color); margin-top:0;">Manage User</h3>
+        <button class="gold" id="editBtn" style="width:100%; padding:12px; font-weight:bold; border:none; border-radius:10px; cursor:pointer;">✏️ Edit User</button><br>
+        <button style="background:#e53935; color:white; width:100%; margin-top:10px; padding:12px; font-weight:bold; border:none; border-radius:10px; cursor:pointer;" id="deleteBtn">🗑️ Delete User</button><br>
+        <button style="background:#555; color:white; width:100%; margin-top:10px; padding:12px; border:none; border-radius:10px; cursor:pointer;" onclick="closeActionPopup()">Cancel</button>
+    </div>
+</div>
+
+<div id="txActionPopup" class="popup-overlay" onclick="closeTxActionPopup()">
+    <div class="popup-content" onclick="event.stopPropagation()">
+        <h3 style="color:var(--theme-color); margin-top:0;">டிரான்ஸாக்ஷன் மேலாண்மை</h3>
+        <button class="gold" id="txEditBtn" style="width:100%;">✏️ Edit Entry</button><br>
+        <button style="background:#e53935; color:white; width:100%; margin-top:10px;" id="txDeleteBtn">🗑️ Delete Entry</button><br>
+        <button style="background:#555; color:white; width:100%; margin-top:10px;" onclick="closeTxActionPopup()">Cancel</button>
     </div>
 </div>
 
 <script>
-const USERS_DB = [
-    { id: "FLOR", pin: "1234", exp: "2026-12-30" },
-    { id: "SAHA", pin: "2233", exp: "2026-06-15" },
-    { id: "PANEER", pin: "4455", exp: "2026-08-20" },
-    { id: "ADMIN", pin: "0000", exp: "2027-01-01" }
-];
+const CLOUD_URL = "https://script.google.com/macros/s/AKfycbw9ee1RT6WeBnLB9SujBNOKoEV20H94lvrTD4yUJd_bU_8dn38QbFGy4_9ZGjx80neC/exec";
 
-let cfg = JSON.parse(localStorage.getItem('saha_v66_cfg')) || {
-    "title":"SAHAYARAJ-2026", "headCol":"#0c40bb", "nameCol":"#ffffff", "outCol":"#54301d", "btmCol":"#0b08d4", "catLetCol":"#e32b2b", "catNumCol":"#1e40af",
-    "scrW":95, "fsDT":22, "fsCatL":14, "fsCatN":28, "fsEnt":14,
-    "swBack":true, "swDate":true, "swClock":true, "swPen":true, "swTrDel":true, "swAllDel":true, "swPdf":true, "swWa":true, "swImp":true, "swExp":true,
-    "adminPin":"1020", "expiryDate":"", "isLogged": false, "currentUser":"", "cats":[]
+let users = [];
+let appConfig = JSON.parse(localStorage.getItem("financeConfig")) || {
+    title: "Finance Manager Pro",
+    width: 500,
+    height: 100,
+    fontSize: 16,
+    fontWeight: "normal",
+    color: "#ffd700",
+    showDash: true,
+    showSearch: true
 };
-let db = JSON.parse(localStorage.getItem('saha_v66_db')) || [];
-let activeFilters = [];
-let currentViewMode = "CR"; 
 
-function init() {
-    if(cfg.isLogged) checkAndShowApp();
-    document.documentElement.style.setProperty('--p-bg', cfg.headCol);
-    document.documentElement.style.setProperty('--n-col', cfg.nameCol);
-    document.documentElement.style.setProperty('--btm', cfg.btmCol);
-    document.documentElement.style.setProperty('--out', cfg.outCol);
-    document.getElementById('mainContainer').style.width = cfg.scrW + "%";
-    document.getElementById('dispTitle').innerText = cfg.title;
-    startClock(); renderUI(); refresh();
+let currentUser = null;
+let editIndex = null;
+
+function showLoading(show) {
+    document.getElementById("loading").style.display = show ? "block" : "none";
 }
 
-function handleLogin() {
-    const uInput = document.getElementById('logUser').value.trim().toUpperCase();
-    const pInput = document.getElementById('logPin').value.trim();
-    const todayStr = new Date().toISOString().split('T')[0];
-    const found = USERS_DB.find(u => u.id === uInput && u.pin === pInput);
-
-    if (found) {
-        if (todayStr <= found.exp) {
-            cfg.isLogged = true; cfg.currentUser = found.id; cfg.expiryDate = found.exp;
-            localStorage.setItem('saha_v66_cfg', JSON.stringify(cfg));
-            checkAndShowApp();
-        } else { alert("EXPIRED: " + found.exp); }
-    } else { alert("INVALID LOGIN!"); }
+function initConfig() {
+    document.getElementById("setAppTitle").value = appConfig.title;
+    document.getElementById("setAppWidth").value = appConfig.width;
+    document.getElementById("setAppHeight").value = appConfig.height || 100;
+    document.getElementById("setAppFontSize").value = appConfig.fontSize || 16;
+    document.getElementById("setAppFontWeight").value = appConfig.fontWeight || "normal";
+    document.getElementById("setThemeColor").value = appConfig.color;
+    document.getElementById("switchDash").checked = appConfig.showDash;
+    document.getElementById("switchSearch").checked = appConfig.showSearch;
+    applyConfigUI();
 }
 
-function checkAndShowApp() {
-    const todayStr = new Date().toISOString().split('T')[0];
-    if (todayStr > cfg.expiryDate) { logout(); return; }
-    document.getElementById('loginOverlay').classList.add('hidden');
-    document.getElementById('appPage').classList.remove('hidden');
-    document.getElementById('currentUserDisplay').innerText = cfg.currentUser;
-    if(cfg.expiryDate) {
-        let exp = new Date(cfg.expiryDate); exp.setDate(exp.getDate() - 1);
-        document.getElementById('expiryDisplay').innerText = "RENEWAL: " + exp.toLocaleDateString('en-GB');
+function setPresetColor(colorCode) {
+    document.getElementById("setThemeColor").value = colorCode;
+    applySettings();
+}
+
+function applySettings() {
+    appConfig.title = document.getElementById("setAppTitle").value || "Finance Manager Pro";
+    appConfig.width = document.getElementById("setAppWidth").value;
+    appConfig.height = document.getElementById("setAppHeight").value || 100;
+    appConfig.fontSize = document.getElementById("setAppFontSize").value || 16;
+    appConfig.fontWeight = document.getElementById("setAppFontWeight").value || "normal";
+    appConfig.color = document.getElementById("setThemeColor").value;
+    appConfig.showDash = document.getElementById("switchDash").checked;
+    appConfig.showSearch = document.getElementById("switchSearch").checked;
+    
+    localStorage.setItem("financeConfig", JSON.stringify(appConfig));
+    applyConfigUI();
+}
+
+function applyConfigUI() {
+    document.getElementById("headerTitleText").innerText = appConfig.title;
+    document.getElementById("widthVal").innerText = appConfig.width;
+    document.getElementById("heightVal").innerText = appConfig.height || 100;
+    document.getElementById("fontSizeVal").innerText = appConfig.fontSize || 16;
+    
+    document.documentElement.style.setProperty('--app-width', appConfig.width + 'px');
+    
+    let hVal = appConfig.height || 100;
+    document.documentElement.style.setProperty('--app-height', hVal + 'vh');
+    
+    document.documentElement.style.setProperty('--app-font-size', (appConfig.fontSize || 16) + 'px');
+    document.documentElement.style.setProperty('--app-font-weight', appConfig.fontWeight || 'normal');
+    document.documentElement.style.setProperty('--theme-color', appConfig.color);
+    
+    let hex = appConfig.color;
+    document.documentElement.style.setProperty('--theme-gradient', `linear-gradient(145deg, ${hex}, #333333)`);
+
+    document.getElementById("dashboardWrapper").style.display = appConfig.showDash ? "grid" : "none";
+    document.getElementById("searchBoxWrapper").style.display = appConfig.showSearch ? "block" : "none";
+}
+
+function openSettingsPopup() { document.getElementById("settingsPopup").style.display = "flex"; }
+function closeSettingsPopup() { document.getElementById("settingsPopup").style.display = "none"; }
+
+async function saveToCloudOnly(){ 
+    showLoading(true);
+    try {
+        await fetch(CLOUD_URL, {
+            method: "POST",
+            mode: "no-cors",
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            body: "data=" + encodeURIComponent(JSON.stringify(users))
+        });
+    } catch(e) { console.error(e); }
+    showLoading(false);
+}
+
+async function fetchFromCloud() {
+    showLoading(true);
+    try {
+        let res = await fetch(CLOUD_URL);
+        let cloudData = await res.json();
+        if(cloudData && Array.isArray(cloudData)) {
+            users = cloudData;
+            renderUsers();
+        }
+    } catch(e) { console.error(e); }
+    showLoading(false);
+}
+
+function formatDate(d){ 
+    if(!d) return ""; 
+    let dateStr = String(d).trim();
+    
+    if (dateStr.includes('-T') || (dateStr.includes('-') && dateStr.toUpperCase().includes('T'))) {
+        let upperStr = dateStr.toUpperCase();
+        let tIndex = upperStr.indexOf('T');
+        let datePart = dateStr.substring(0, tIndex);
+        let dayPart = dateStr.substring(tIndex + 1);
+        
+        if(dayPart.includes(':')) {
+            dayPart = dayPart.split(':')[0];
+            let cleanPart = dateStr.split('T')[0];
+            if(cleanPart.includes('-')) {
+                let p = cleanPart.split('-');
+                if(p[0].length === 4) return `${parseInt(p[2],10)}-${parseInt(p[1],10)}-${p[0].substring(2,4)}`;
+            }
+        }
+        
+        let parts = datePart.split('-');
+        if(parts.length >= 2) {
+            let year = parts[0].substring(2, 4);
+            let month = parseInt(parts[1], 10);
+            let day = parseInt(dayPart, 10);
+            return `${day}-${month}-${year}`;
+        }
+    }
+    
+    if (dateStr.includes('T') && dateStr.includes('-')) {
+        let parts = dateStr.split('-');
+        if (parts.length === 3) {
+            let dayPart = parts[0].split('T')[0];
+            let month = parseInt(parts[1], 10);
+            let year = parts[2].substring(2, 4); 
+            return `${parseInt(dayPart, 10)}-${month}-${year}`;
+        }
+    }
+    
+    if (dateStr.includes('-')) {
+        let parts = dateStr.split("-");
+        if (parts[0].length === 4) {
+            return `${parseInt(parts[2], 10)}-${parseInt(parts[1], 10)}-${parts[0].substring(2, 4)}`;
+        } else if (parts[2].length === 4) {
+            return `${parseInt(parts[0], 10)}-${parseInt(parts[1], 10)}-${parts[2].substring(2, 4)}`;
+        }
+    }
+    return dateStr;
+}
+
+function getBalance(u){
+    if(!u.transactions) return 0;
+    return u.transactions.reduce((a,t)=>a+(Number(t.credit||0)-Number(t.debit||0)), 0);
+}
+
+// கிரெடிட் அல்லது டெபிட்டில் 00 என்று கொடுத்தால் கூட சிவப்பு நிறம் வராது. வெற்றுப் பதிவாக (Empty String) இருந்தால் மட்டுமே சிவப்பு நிறம் வரும்.
+function isRed(u) {
+    if (!u.transactions || u.transactions.length === 0) return false;
+    let today = new Date().toISOString().split("T")[0];
+    return u.transactions.some(t => {
+        let hasNoCredit = (t.credit === null || t.credit === undefined || String(t.credit).trim() === "");
+        let hasNoDebit = (t.debit === null || t.debit === undefined || String(t.debit).trim() === "");
+        return t.date <= today && hasNoCredit && hasNoDebit;
+    });
+}
+
+function getTenPercent(u) {
+    if(!isRed(u)) return 0;
+    let loan = u.transactions.find(t => Number(t.debit) > 0);
+    return loan ? (Number(loan.debit) * 0.10) : 0;
+}
+
+function renderUsers(){
+    const searchInput = document.getElementById("userSearch");
+    const search = searchInput ? searchInput.value.toLowerCase().trim() : "";
+    const listDiv = document.getElementById("userList");
+    listDiv.innerHTML = "";
+
+    let totalBal = 0, redCount = 0, tenTotal = 0;
+    users.forEach(u => {
+        totalBal += getBalance(u);
+        if(isRed(u)) { redCount++; tenTotal += getTenPercent(u); }
+    });
+
+    document.getElementById("totalUsers").innerText = users.length;
+    document.getElementById("totalBalance").innerText = "₹ " + totalBal.toLocaleString();
+    document.getElementById("redUsersCount").innerText = redCount;
+    document.getElementById("tenPercentTotal").innerText = "₹ " + tenTotal.toLocaleString();
+
+    let filtered = users.filter(u => {
+        let nameMatch = u.name ? String(u.name).toLowerCase().includes(search) : false;
+        let mobileMatch = u.mobile ? String(u.mobile).toLowerCase().includes(search) : false;
+        return nameMatch || mobileMatch;
+    });
+    
+    filtered.sort((a, b) => {
+        let a_red = isRed(a) ? 1 : 0;
+        let b_red = isRed(b) ? 1 : 0;
+        if (a_red !== b_red) { return b_red - a_red; }
+        return Math.abs(getBalance(a)) - Math.abs(getBalance(b));
+    });
+
+    filtered.forEach((u)=>{
+        let realIdx = users.indexOf(u);
+        let card = document.createElement("div");
+        card.className = "user-card" + (isRed(u) ? " redbg" : "");
+        card.onclick = () => openUser(realIdx);
+        
+        card.innerHTML = `
+            <div class="row">
+                <div>
+                    <b>${u.name}</b><br>
+                    <small style="font-size:13px;">${u.mobile || ''}</small>
+                </div>
+                <div style="font-weight:bold;">₹ ${getBalance(u).toLocaleString()}</div>
+            </div>
+            <button class="menu-dot-btn" onclick="triggerActionMenu(event, ${realIdx}, '${u.name}')">&#8942;</button>
+        `;
+        listDiv.appendChild(card);
+    });
+}
+
+function triggerActionMenu(event, realIdx, name) {
+    event.stopPropagation();
+    openActionPopup(name, realIdx);
+}
+
+function openActionPopup(name, realIdx) {
+    document.getElementById("popupTitle").innerText = name;
+    document.getElementById("actionPopup").style.display = "flex";
+    
+    document.getElementById("editBtn").onclick = function() {
+        editUser(realIdx);
+    };
+    document.getElementById("deleteBtn").onclick = function() {
+        deleteUser(realIdx);
+    };
+}
+
+function closeActionPopup() {
+    document.getElementById("actionPopup").style.display = "none";
+}
+
+function openUser(i){
+    currentUser = i;
+    document.getElementById("mainScreen").classList.add("hidden");
+    document.getElementById("userScreen").classList.remove("hidden");
+    renderTransactions();
+}
+
+function setupLongPress(element, callback) {
+    let pressTimer;
+    const start = (e) => { pressTimer = setTimeout(() => callback(), 800); };
+    const cancel = () => { clearTimeout(pressTimer); };
+    element.addEventListener("mousedown", start);
+    element.addEventListener("touchstart", start, { passive: true });
+    element.addEventListener("click", cancel);
+    element.addEventListener("mouseout", cancel);
+    element.addEventListener("touchend", cancel);
+    element.addEventListener("touchcancel", cancel);
+}
+
+function goBack(){
+    document.getElementById("mainScreen").classList.remove("hidden");
+    document.getElementById("userScreen").classList.add("hidden");
+    renderUsers();
+}
+
+function openEntryForm(){ 
+    document.getElementById("tDate").value = new Date().toISOString().split("T")[0];
+    document.getElementById("tDesc").value = "";
+    document.getElementById("tCredit").value = "";
+    document.getElementById("tDebit").value = "";
+    editIndex = null;
+    document.getElementById("entryPopup").style.display = "flex"; 
+}
+function closeEntryForm(){ document.getElementById("entryPopup").style.display = "none"; editIndex = null; }
+
+async function saveTransaction(){
+    let d = document.getElementById("tDate").value, desc = document.getElementById("tDesc").value;
+    let c = document.getElementById("tCredit").value, deb = document.getElementById("tDebit").value;
+    if(!d) return alert("Date is required!");
+
+    let tx = { date: d, desc: desc, credit: c, debit: deb };
+    if(editIndex === null) {
+        users[currentUser].transactions.push(tx);
+    } else {
+        users[currentUser].transactions[editIndex] = tx; 
+        editIndex = null; 
+    }
+
+    closeEntryForm();
+    await saveToCloudOnly();
+    renderTransactions();
+}
+
+function renderTransactions(){
+    let u = users[currentUser];
+    u.transactions.sort((a, b) => new Date(a.date) - new Date(b.date));
+    
+    document.getElementById("profName").innerText = u.name;
+    document.getElementById("profMobile").innerText = u.mobile || "No Mobile";
+    document.getElementById("profBalance").innerText = "Bal: ₹" + getBalance(u).toLocaleString();
+    
+    const tableBody = document.getElementById("transactionTable");
+    tableBody.innerHTML = "";
+    
+    let curBal = 0, display = [];
+    u.transactions.forEach((tx, originalIndex) => {
+        let isNote = (String(tx.credit).trim() === "" && String(tx.debit).trim() === "");
+        if(!isNote) curBal += (Number(tx.credit||0) - Number(tx.debit||0));
+        display.push({ ...tx, cumulative: isNote ? "" : curBal, actualIdx: originalIndex });
+    });
+
+    display.reverse().forEach((tx) => {
+        let row = document.createElement("tr");
+        if(Number(tx.credit) > 0 || tx.credit === "0" || tx.credit === 0) row.className = "credit-row";
+        else if(Number(tx.debit) > 0 || tx.debit === "0" || tx.debit === 0) row.className = "debit-row";
+        else row.className = "pending-row";
+
+        row.innerHTML = `<td>${formatDate(tx.date)}</td>
+                         <td>${tx.desc||""}</td>
+                         <td>${tx.credit||""}</td>
+                         <td>${tx.debit||""}</td>
+                         <td><b>${tx.cumulative}</b></td>`;
+                         
+        setupLongPress(row, () => { openTxActionPopup(tx.actualIdx); });
+        tableBody.appendChild(row);
+    });
+}
+
+function openTxActionPopup(idx) {
+    document.getElementById("txActionPopup").style.display = "flex";
+    document.getElementById("txEditBtn").onclick = () => { closeTxActionPopup(); editTransaction(idx); };
+    document.getElementById("txDeleteBtn").onclick = () => { closeTxActionPopup(); deleteTransaction(idx); };
+}
+function closeTxActionPopup() { document.getElementById("txActionPopup").style.display = "none"; }
+
+function editTransaction(i){
+    let tx = users[currentUser].transactions[i];
+    document.getElementById("tDate").value = tx.date;
+    document.getElementById("tDesc").value = tx.desc || "";
+    document.getElementById("tCredit").value = tx.credit;
+    document.getElementById("tDebit").value = tx.debit;
+    editIndex = i;
+    document.getElementById("entryPopup").style.display = "flex";
+}
+
+async function deleteTransaction(i){ 
+    if(confirm("இந்த எண்ட்ரியை நீக்கவா?")){ 
+        users[currentUser].transactions.splice(i,1); 
+        await saveToCloudOnly(); 
+        renderTransactions(); 
+    } 
+}
+
+async function addUser(){
+    let n=prompt("Name:"), m=prompt("Mobile:");
+    if(n){ 
+        users.push({name:n,mobile:m,transactions:[]}); 
+        await saveToCloudOnly(); 
+        renderUsers(); 
+    }
+}
+async function editUser(i){
+    let currentName = users[i].name; let currentMobile = users[i].mobile;
+    let newName = prompt("Name:", currentName); let newMobile = prompt("Mobile:", currentMobile);
+    if(newName !== null && newName.trim() !== "") users[i].name = newName;
+    if(newMobile !== null) users[i].mobile = newMobile;
+    closeActionPopup();
+    await saveToCloudOnly(); 
+    renderUsers();
+}
+async function deleteUser(i){ 
+    if(confirm("இந்த யூசரை ஆப்பிலிருந்து நிரந்தரமாக நீக்கவா?")){ 
+        users.splice(i,1); 
+        closeActionPopup(); 
+        await saveToCloudOnly(); 
+        renderUsers(); 
+    } 
+}
+
+function exportData(){
+    let a=document.createElement("a");
+    a.href="data:text/json;charset=utf-8,"+encodeURIComponent(JSON.stringify(users));
+    a.download="Finance_Backup_2026.json"; a.click();
+}
+
+function allDeleteWithExport() {
+    if (users.length === 0) {
+        alert("நீக்குவதற்கு டேட்டா எதுவும் இல்லை!");
+        return;
+    }
+    
+    if (confirm("எச்சரிக்கை! அனைத்து யூசர் விவரங்களும் நிரந்தரமாக நீக்கப்படும். நீக்குவதற்கு முன் ஆட்டோமேட்டிக்காக பேக்கப் ஃபைல் டவுன்லோட் செய்யப்படும். தொடரலாமா?")) {
+        let fileName = prompt("பேக்கப் ஃபைல் பெயர் (File Name) what do you want to keep?", "Finance_Backup_All_Delete");
+        
+        if (fileName === null) return; 
+        if (fileName.trim() === "") fileName = "Finance_Backup_All_Delete";
+        
+        let dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(users));
+        let downloadAnchor = document.createElement("a");
+        downloadAnchor.setAttribute("href", dataStr);
+        downloadAnchor.setAttribute("download", fileName + ".json");
+        document.body.appendChild(downloadAnchor);
+        downloadAnchor.click();
+        downloadAnchor.remove();
+        
+        setTimeout(async () => {
+            users = [];
+            showLoading(true);
+            try {
+                await fetch(CLOUD_URL, {
+                    method: "POST",
+                    mode: "no-cors",
+                    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                    body: "data=" + encodeURIComponent(JSON.stringify([]))
+                });
+            } catch(e) { console.error(e); }
+            showLoading(false);
+            renderUsers();
+            closeSettingsPopup();
+            alert("அனைத்து டேட்டாக்களும் வெற்றிகரமாக எக்ஸ்போர்ட் செய்யப்பட்டு ஆப்பிலிருந்து நீக்கப்பட்டது!");
+        }, 1000); 
     }
 }
 
-function logout() { cfg.isLogged = false; localStorage.setItem('saha_v66_cfg', JSON.stringify(cfg)); location.reload(); }
-function startClock() { setInterval(() => { const now = new Date(); document.getElementById('liveDateTime').innerHTML = `${now.toLocaleDateString('en-GB')} | ${now.toLocaleTimeString('en-GB')}`; }, 1000); }
-
-function renderUI() {
-    const grid = document.getElementById('catGrid'), eSel = document.getElementById('eCat'), fList = document.getElementById('filterCatList');
-    grid.innerHTML = ""; eSel.innerHTML = ""; fList.innerHTML = `<button onclick="toggleFilter('ALL')" id="btn_ALL" class="bg-blue-900 text-white px-3 py-1 rounded-lg btn-style text-[10px] filter-btn-active">ALL</button>`;
-    cfg.cats.forEach((c) => {
-        grid.innerHTML += `<div class="cat-card"><p style="font-size:${cfg.fsCatL}px; color:var(--c-let)">${c}</p><h3 style="font-size:${cfg.fsCatN}px; color:var(--c-num)">₹<span id="sum_${c}">0</span></h3></div>`;
-        eSel.innerHTML += `<option value="${c}">${c}</option>`;
-        fList.innerHTML += `<button onclick="toggleFilter('${c}')" id="btn_${c}" class="bg-blue-900 text-white px-3 py-1 rounded-lg btn-style text-[10px]">${c}</button>`;
-    });
+async function importData(event){
+    let f=event.target.files[0]; if(!f) return;
+    let r=new FileReader();
+    r.onload=async function(e){ 
+        users=JSON.parse(e.target.result); 
+        await saveToCloudOnly(); 
+        renderUsers(); 
+    };
+    r.readAsText(f);
 }
 
-function refresh() {
-    db.sort((a, b) => new Date(b.date) - new Date(a.date));
-    let html = "", grand = 0;
-    let tempSums = {}; cfg.cats.forEach(c => tempSums[c] = 0);
-    
-    // பில்டரைத் தாண்டி பட்டன்களில் தொகை வர கணக்கீடு
-    db.forEach(t => {
-        let v = (t.type === "CR") ? parseFloat(t.amt) : -parseFloat(t.amt);
-        if(tempSums.hasOwnProperty(t.cat)) tempSums[t.cat] += v;
-    });
-
-    let filtered = getFilteredData();
-    filtered.forEach(t => {
-        let amt = parseFloat(t.amt) || 0;
-        grand += (t.type === "CR" ? amt : -amt);
-        html += `<tr class="border-b" style="font-size:${cfg.fsEnt}px">
-            <td class="p-3">${t.date.split('-').reverse().join('/')}</td><td class="p-3">${t.mob}</td><td class="p-3">${t.cat}</td>
-            <td class="p-3 text-blue-700">${t.desc}</td><td class="p-3 text-right ${t.type==='CR'?'text-green-600':'text-red-600'}">₹${amt.toLocaleString()}</td>
-            <td class="p-3 flex justify-center gap-4"><button onclick="editRow(${t.id})">🖋️</button><button onclick="del(${t.id})" class="text-red-600">✖</button></td></tr>`;
-    });
-    document.getElementById('resTable').innerHTML = html;
-    document.getElementById('mainTotal').innerText = "₹" + grand.toLocaleString();
-    cfg.cats.forEach(c => { if(document.getElementById('sum_'+c)) document.getElementById('sum_'+c).innerText = (tempSums[c] || 0).toLocaleString(); });
-}
-
-function getFilteredData() {
-    const fD = document.getElementById('fDate').value, tD = document.getElementById('tDate').value, sM = document.getElementById('sMob').value, sDes = document.getElementById('sDesc').value.toLowerCase();
-    return db.filter(t => {
-        const mBell = (!cfg.startingDate || t.date >= cfg.startingDate), mCat = (activeFilters.length === 0 || activeFilters.includes(t.cat)), mDate = (!fD || t.date >= fD) && (!tD || t.date <= tD), mMob = (!sM || t.mob.includes(sM)), mDesc = (!sDes || t.desc.toLowerCase().includes(sDes)), mView = (currentViewMode === "BOTH" || t.type === currentViewMode);
-        return mBell && mCat && mDate && mMob && mDesc && mView;
-    });
-}
-
-function saveData() {
-    const d = document.getElementById('eDate').value, a = document.getElementById('eAmt').value, editId = document.getElementById('editId').value;
-    if(!d || !a) return alert("REQUIRED!");
-    let entry = { id: editId ? parseInt(editId) : Date.now(), date: d, mob: document.getElementById('eMob').value || "-", cat: document.getElementById('eCat').value, desc: document.getElementById('eDesc').value || "-", amt: a, type: document.getElementById('eType').value };
-    if(editId) { db[db.findIndex(x => x.id == editId)] = entry; document.getElementById('editId').value = ""; document.getElementById('saveBtn').innerText = "SAVE ✅"; } else { db.push(entry); }
-    localStorage.setItem('saha_v66_db', JSON.stringify(db)); refresh();
-}
-
-function setViewMode(mode) { currentViewMode = mode; document.querySelectorAll('.action-btn').forEach(btn => btn.classList.remove('active')); document.getElementById('view' + mode).classList.add('active'); refresh(); }
-function toggleFilter(cat) { if(cat === 'ALL') { activeFilters = []; document.querySelectorAll('#filterCatList button').forEach(b => b.classList.remove('filter-btn-active')); document.getElementById('btn_ALL').classList.add('filter-btn-active'); } else { document.getElementById('btn_ALL').classList.remove('filter-btn-active'); const idx = activeFilters.indexOf(cat); if(idx > -1) { activeFilters.splice(idx, 1); document.getElementById('btn_'+cat).classList.remove('filter-btn-active'); } else { activeFilters.push(cat); document.getElementById('btn_'+cat).classList.add('filter-btn-active'); } if(activeFilters.length === 0) document.getElementById('btn_ALL').classList.add('filter-btn-active'); } refresh(); }
-function openSettings() { if(prompt("ADMIN PIN:") === cfg.adminPin) document.getElementById('setModal').classList.remove('hidden'); }
-function closeSettings() { document.getElementById('setModal').classList.add('hidden'); }
-function saveSettings() { cfg.title = document.getElementById('setTitle').value; cfg.adminPin = document.getElementById('setAdminPin').value; localStorage.setItem('saha_v66_cfg', JSON.stringify(cfg)); location.reload(); }
-function del(id) { if(confirm("DEL?")) { db = db.filter(x => x.id !== id); localStorage.setItem('saha_v66_db', JSON.stringify(db)); refresh(); } }
-function promptAddCat() { const name = prompt("NAME:").trim().toUpperCase(); if(name && !cfg.cats.includes(name)) { cfg.cats.push(name); localStorage.setItem('saha_v66_cfg', JSON.stringify(cfg)); init(); } }
-function promptDelCat() { const name = prompt("DELETE NAME:").trim().toUpperCase(); if(cfg.cats.includes(name)) { cfg.cats = cfg.cats.filter(c => c !== name); localStorage.setItem('saha_v66_cfg', JSON.stringify(cfg)); init(); } }
+window.onload = function() {
+    initConfig();
+    fetchFromCloud();
+};
 </script>
 </body>
 </html>
