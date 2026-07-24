@@ -1,760 +1,339 @@
 <!DOCTYPE html>
 <html lang="ta">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Finance Manager Pro</title>
-<style>
-:root {
-    --theme-color: #ffd700;
-    --theme-gradient: linear-gradient(145deg, #ffd700, #333333);
-    --app-width: 500px;
-    --app-height: 100vh;
-    --app-font-size: 16px;
-    --app-font-weight: normal;
-}
-body{margin:0;font-family:'Segoe UI',Arial,sans-serif;background:#111;color:white;user-select:none;-webkit-user-select:none; font-size: var(--app-font-size); font-weight: var(--app-font-weight);}
-
-.wrapper{
-    max-width: var(--app-width); 
-    margin:auto; 
-    padding-bottom: 50px; 
-    background:#111; 
-    min-height: var(--app-height); 
-    height: var(--app-height);
-    overflow-y: auto;
-    transition: max-width 0.3s, min-height 0.3s, height 0.3s;
-    border: 1px solid #222;
-}
-
-header{background: var(--theme-gradient); color:#111; text-align:center; padding:18px; font-size:calc(var(--app-font-size) + 4px); font-weight:bold; box-shadow: 0 4px 10px rgba(0,0,0,0.5); position: relative;}
-
-.indicator-container {
-    position: absolute;
-    right: 15px;
-    top: 50%;
-    transform: translateY(-50%);
-}
-.g-led {
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    background: #222;
-    color: #ff4444;
-    border: 2px solid #ff4444;
-    box-shadow: 0 0 10px #ff4444, inset 0 0 5px #ff4444;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 14px;
-    font-weight: 900;
-    transition: 0.3s;
-}
-.g-led.connected {
-    color: #00ff00;
-    border-color: #00ff00;
-    box-shadow: 0 0 15px #00ff00, inset 0 0 5px #00ff00, 0 0 5px #fff;
-}
-
-.dashboard{display:grid;grid-template-columns: repeat(2, 1fr);gap:10px;padding:10px;}
-.stat-box{background:#222;padding:15px 10px;border-radius:10px;text-align:center;border:1px solid #333;}
-.stat-box.red-border{border: 2px solid #e53935;}
-.stat-box small{color: #aaa; font-size: calc(var(--app-font-size) - 3px); text-transform: uppercase; font-weight: bold; display: block; margin-bottom: 5px;}
-.stat-box h2{margin:0; font-size: calc(var(--app-font-size) + 4px); color: var(--theme-color); font-weight: 900;}
-
-.search-container{padding:10px;}
-.search-input{width:100%; padding:12px; border-radius:10px; border:1px solid var(--theme-color); background:#222; color:white; box-sizing: border-box; font-size: var(--app-font-size); font-weight: var(--app-font-weight);}
-
-.top-buttons {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 4px;
-    padding: 0 10px;
-    margin: 10px 0;
-}
-.top-buttons button {
-    padding: 12px 2px;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-    font-weight: bold;
-    font-size: calc(var(--app-font-size) - 4px);
-    transition: 0.3s;
-    text-align: center;
-    box-sizing: border-box;
-    white-space: nowrap;
-}
-.gold{background: var(--theme-color); color:#111;}
-
-.user-card{width:calc(100% - 20px);margin:10px auto;padding:15px;border-radius:15px;background:#222;cursor:pointer;border: 1px solid #333;box-sizing: border-box; position: relative;}
-.user-card.redbg{background:linear-gradient(145deg, #8b0000, #5a0000); border-color: #ff4444;}
-.row{display:flex;justify-content:space-between; align-items:center; font-size: var(--app-font-size); padding-right: 35px;}
-
-.menu-dot-btn { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: transparent; color: var(--theme-color); font-size: 24px; border: none; padding: 5px; cursor: pointer; z-index: 10;}
-
-.profile-header{background:#222; padding:15px 20px; border-bottom: 2px solid var(--theme-color); margin-bottom: 5px; position: relative;}
-.profile-header h2{margin:0 0 15px 0; color: var(--theme-color); text-align: center; font-size: calc(var(--app-font-size) + 8px); padding-top: 5px;}
-.prof-header-buttons{display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 10px;}
-.prof-details-row{display: flex; justify-content: space-between; align-items: center; margin-top: 10px;}
-
-#profMobile { margin: 0; font-size: var(--app-font-size); color: var(--theme-color); font-weight: bold; }
-#profBalance { margin: 0; font-size: calc(var(--app-font-size) + 4px); color: #ffffff; font-weight: 900; }
-
-.table-container{overflow-x:auto; padding:10px;}
-table{width:100%;border-collapse:collapse; background: #1a1a1a; border-radius: 10px;}
-th,td{padding:10px 4px;text-align:center; border-bottom: 1px solid #444; font-size: calc(var(--app-font-size) - 2px); font-weight: var(--app-font-weight);}
-th{background:#333; color: var(--theme-color); font-weight: bold;}
-
-.credit-row{background-color: #1f7a1f !important; color: white !important;}
-.debit-row{background-color: #b91c1c !important; color: white !important;}
-.pending-row{background-color: #2c2c2c; color: var(--theme-color);}
-
-.popup-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);z-index:1000;justify-content:center;align-items:center;}
-.popup-content{background:#222;padding:22px;border-radius:20px;text-align:center;border:2px solid var(--theme-color);width:90%; max-width: 380px; max-height: 85vh; overflow-y: auto; color: white;}
-
-input[type="date"], input[type="text"], input[type="number"], select{width:100%;margin:8px 0;padding:12px;border:none;border-radius:8px;background:#333;color:white; box-sizing: border-box; font-size: var(--app-font-size);}
-.hidden{display:none;}
-
-.setting-row { display: flex; justify-content: space-between; align-items: center; margin: 15px 0; text-align: left; font-size: calc(var(--app-font-size) - 1px); }
-.switch { position: relative; display: inline-block; width: 46px; height: 24px; }
-.switch input { opacity: 0; width: 0; height: 0; }
-.slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #444; transition: .3s; border-radius: 24px; }
-.slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .3s; border-radius: 50%; }
-input:checked + .slider { background-color: #1f7a1f; }
-input:checked + .slider:before { transform: translateX(22px); }
-
-.color-presets { 
-    display: grid; 
-    grid-template-columns: repeat(6, 1fr); 
-    gap: 8px; 
-    margin-top: 8px; 
-    background: #1a1a1a;
-    padding: 10px;
-    border-radius: 12px;
-    border: 1px solid #333;
-}
-.color-dot { width: 100%; aspect-ratio: 1; border-radius: 50%; border: 1px solid rgba(255,255,255,0.4); cursor: pointer; transition: 0.2s; box-sizing: border-box;}
-.color-dot:hover { transform: scale(1.15); border-color: #fff; box-shadow: 0 0 8px rgba(255,255,255,0.8); }
-
-#loading { display:none; position: fixed; top: 10px; right: 10px; background: var(--theme-color); color: #111; padding: 8px 15px; border-radius: 20px; font-weight: bold; z-index: 10000; font-size: 13px;}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ரயில் முன்பதிவு விவரங்கள்</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #1e1e2f;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            color: #fff;
+        }
+        .container {
+            background: #2d2d44;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+            width: 420px;
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #00bcd4;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #b0bec5;
+        }
+        input[type="text"], input[type="number"], select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #444;
+            background: #1e1e2f;
+            color: #fff;
+            border-radius: 6px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        .row {
+            display: flex;
+            gap: 10px;
+        }
+        .row .input-group {
+            flex: 1;
+        }
+        .passenger-row {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+        .passenger-row input[type="text"] {
+            flex: 2;
+        }
+        .passenger-row input[type="number"] {
+            flex: 1;
+        }
+        .passenger-row select {
+            flex: 1.2;
+        }
+        button.save-btn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+            margin-top: 15px;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+        button.save-btn:hover {
+            background-color: #388E3C;
+        }
+        button.copy-btn {
+            background-color: #ff9800;
+            color: white;
+            padding: 5px 8px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: bold;
+            margin-left: 5px;
+        }
+        button.copy-btn:hover {
+            background-color: #e68900;
+        }
+        /* Index List Style */
+        .index-list {
+            margin-top: 15px;
+            background: #3a3a5e;
+            padding: 12px;
+            border-radius: 6px;
+        }
+        .index-item {
+            background: #2d2d44;
+            padding: 10px;
+            margin-bottom: 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.3s;
+        }
+        .index-item:hover {
+            background: #00bcd4;
+            color: #000;
+        }
+        /* Modal Popup Style */
+        #modalOverlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7);
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+        }
+        .modal-content {
+            background: #2d2d44;
+            padding: 30px;
+            border-radius: 10px;
+            width: 450px;
+            color: #fff;
+            position: relative;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+        }
+        .close-btn {
+            position: absolute;
+            top: 10px; right: 15px;
+            font-size: 24px;
+            cursor: pointer;
+            color: #ff5252;
+        }
+        .record-passenger {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 16px;
+            margin-top: 10px;
+            padding: 8px;
+            background: #3a3a5e;
+            border-radius: 4px;
+        }
+        /* Toast Notification */
+        #toast {
+            visibility: hidden;
+            min-width: 200px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 4px;
+            padding: 10px;
+            position: fixed;
+            z-index: 20;
+            left: 50%;
+            bottom: 30px;
+            transform: translateX(-50%);
+            font-size: 14px;
+        }
+        #toast.show {
+            visibility: visible;
+            animation: fadein 0.5s, fadeout 0.5s 1.5s;
+        }
+        @keyframes fadein {
+            from { bottom: 0; opacity: 0; }
+            to { bottom: 30px; opacity: 1; }
+        }
+        @keyframes fadeout {
+            from { bottom: 30px; opacity: 1; }
+            to { bottom: 0; opacity: 0; }
+        }
+    </style>
 </head>
 <body>
 
-<div id="loading">SAVE...</div>
-
-<div class="wrapper">
-    <header>
-        <span id="headerTitleText">Finance Manager Pro</span>
-        <div class="indicator-container">
-            <div id="ledLight" class="g-led connected">G</div>
-        </div>
-    </header>
-
-    <div id="mainScreen">
-        <div class="search-container" id="searchBoxWrapper">
-            <input type="text" id="userSearch" class="search-input" placeholder="தேடவும்..." oninput="renderUsers()">
-        </div>
-
-        <div class="dashboard" id="dashboardWrapper">
-            <div class="stat-box"><small>Total Users</small><h2 id="totalUsers">0</h2></div>
-            <div class="stat-box"><small>Total Balance</small><h2 id="totalBalance">0</h2></div>
-            <div class="stat-box red-border"><small style="color:#ff5252;">Red Users</small><h2 id="redUsersCount">0</h2></div>
-            <div class="stat-box red-border"><small style="color:#ff5252;">10% Collection</small><h2 id="tenPercentTotal">0</h2></div>
-        </div>
-
-        <div class="top-buttons">
-            <button class="gold" onclick="addUser()">+ User</button>
-            <button class="gold" onclick="fetchFromCloud()">🔄 Reset</button>
-            <button class="gold" onclick="exportData()">Export</button>
-            <button class="gold" onclick="document.getElementById('importFile').click()">Import</button>
-            <button style="background:#444; color:white;" onclick="openSettingsPopup()">⚙️ Set</button>
-            <input type="file" id="importFile" hidden onchange="importData(event)">
-        </div>
-
-        <div id="userList"></div>
-    </div>
-
-    <div id="userScreen" class="hidden">
-        <div class="profile-header">
-            <div class="prof-header-buttons">
-                <button class="gold" onclick="goBack()" style="padding: 6px 12px;">← Back</button>
-                <button class="gold" onclick="openEntryForm()" style="padding: 6px 12px;">+ Entry</button>
+    <div class="container">
+        <h2>ரயில் முன்பதிவு படிவம்</h2>
+        
+        <!-- From and To Section -->
+        <div class="row">
+            <div class="input-group">
+                <label for="fromInput">From:</label>
+                <input type="text" id="fromInput" placeholder="எ.கா: MDU">
             </div>
-            <h2 id="profName"></h2>
-            <div class="prof-details-row">
-                <p id="profMobile"></p>
-                <h3 id="profBalance"></h3>
+            <div class="input-group">
+                <label for="toInput">To:</label>
+                <input type="text" id="toInput" placeholder="எ.கா: MS">
             </div>
         </div>
 
-        <div class="table-container">
-            <table>
-                <thead><tr><th>Date</th><th>Desc</th><th>Cr</th><th>Db</th><th>Bal</th></tr></thead>
-                <tbody id="transactionTable"></tbody>
-            </table>
-        </div>
-    </div>
-</div>
+        <hr style="border: 0; border-top: 1px solid #444; margin: 15px 0;">
 
-<div id="settingsPopup" class="popup-overlay" onclick="closeSettingsPopup()">
-    <div class="popup-content" onclick="event.stopPropagation()">
-        <h3 style="color:var(--theme-color); margin-top:0;">⚙️ App Settings</h3>
+        <label style="margin-bottom: 10px; font-weight: bold; color: #00bcd4;">பயணிகள் விவரங்கள் (4 நபர்கள் வரை):</label>
         
-        <div style="text-align:left; margin-bottom:12px;">
-            <label style="font-size:14px; color:#aaa;">பேனர் பெயர்:</label>
-            <input type="text" id="setAppTitle" oninput="applySettings()">
-        </div>
+        <!-- Passenger Inputs -->
+        <div class="passenger-row"><input type="text" id="p1_name" placeholder="பெயர் 1"><input type="number" id="p1_age" placeholder="வயது"><select id="p1_gender"><option value="ஆண்">ஆண்</option><option value="பெண்">பெண்</option></select></div>
+        <div class="passenger-row"><input type="text" id="p2_name" placeholder="பெயர் 2"><input type="number" id="p2_age" placeholder="வயது"><select id="p2_gender"><option value="ஆண்">ஆண்</option><option value="பெண்">பெண்</option></select></div>
+        <div class="passenger-row"><input type="text" id="p3_name" placeholder="பெயர் 3"><input type="number" id="p3_age" placeholder="வயது"><select id="p3_gender"><option value="ஆண்">ஆண்</option><option value="பெண்">பெண்</option></select></div>
+        <div class="passenger-row"><input type="text" id="p4_name" placeholder="பெயர் 4"><input type="number" id="p4_age" placeholder="வயது"><select id="p4_gender"><option value="ஆண்">ஆண்</option><option value="பெண்">பெண்</option></select></div>
 
-        <div style="text-align:left; margin-bottom:12px;">
-            <label style="font-size:14px; color:#aaa;">ஆப் அகலம் (Width): <span id="widthVal">500</span>px</label>
-            <input type="range" id="setAppWidth" min="360" max="800" step="10" style="width:100%; margin-top:5px;" oninput="applySettings()">
-        </div>
+        <button class="save-btn" onclick="saveRecord()">Save (சேமி)</button>
 
-        <div style="text-align:left; margin-bottom:12px;">
-            <label style="font-size:14px; color:#aaa;">ஆப் உயரம் (Height): <span id="heightVal">100</span>%</label>
-            <input type="range" id="setAppHeight" min="50" max="100" step="5" style="width:100%; margin-top:5px;" oninput="applySettings()">
-        </div>
-
-        <div style="text-align:left; margin-bottom:12px;">
-            <label style="font-size:14px; color:#aaa;">எழுத்து அளவு (Font Size): <span id="fontSizeVal">16</span>px</label>
-            <input type="range" id="setAppFontSize" min="12" max="24" step="1" style="width:100%; margin-top:5px;" oninput="applySettings()">
-        </div>
-
-        <div style="text-align:left; margin-bottom:12px;">
-            <label style="font-size:14px; color:#aaa;">எழுத்து வடிவம் (Style):</label>
-            <select id="setAppFontWeight" onchange="applySettings()" style="margin-top:5px;">
-                <option value="normal">Normal (லேசான எழுத்து)</option>
-                <option value="bold">Bold (கனமான எழுத்து)</option>
-            </select>
-        </div>
-
-        <div style="text-align:left; margin-bottom:15px;">
-            <label style="font-size:14px; color:#aaa;">தீம் கலர் மாற்றம் (25+ வண்ணங்கள்):</label>
-            <div class="color-presets">
-                <div class="color-dot" style="background:#ffd700;" onclick="setPresetColor('#ffd700')" title="Gold"></div>
-                <div class="color-dot" style="background:#ffb300;" onclick="setPresetColor('#ffb300')" title="Amber"></div>
-                <div class="color-dot" style="background:#ff9100;" onclick="setPresetColor('#ff9100')" title="Orange"></div>
-                <div class="color-dot" style="background:#ff3d00;" onclick="setPresetColor('#ff3d00')" title="Deep Orange"></div>
-                <div class="color-dot" style="background:#e53935;" onclick="setPresetColor('#e53935')" title="Red"></div>
-                <div class="color-dot" style="background:#d81b60;" onclick="setPresetColor('#d81b60')" title="Pink"></div>
-                <div class="color-dot" style="background:#8e24aa;" onclick="setPresetColor('#8e24aa')" title="Purple"></div>
-                <div class="color-dot" style="background:#5e35b1;" onclick="setPresetColor('#5e35b1')" title="Deep Purple"></div>
-                <div class="color-dot" style="background:#3949ab;" onclick="setPresetColor('#3949ab')" title="Indigo"></div>
-                <div class="color-dot" style="background:#1e88e5;" onclick="setPresetColor('#1e88e5')" title="Blue"></div>
-                <div class="color-dot" style="background:#00b0ff;" onclick="setPresetColor('#00b0ff')" title="Light Blue"></div>
-                <div class="color-dot" style="background:#00e5ff;" onclick="setPresetColor('#00e5ff')" title="Cyan"></div>
-                <div class="color-dot" style="background:#00edd6;" onclick="setPresetColor('#00edd6')" title="Teal"></div>
-                <div class="color-dot" style="background:#00a86b;" onclick="setPresetColor('#00a86b')" title="Jade Green"></div>
-                <div class="color-dot" style="background:#4caf50;" onclick="setPresetColor('#4caf50')" title="Green"></div>
-                <div class="color-dot" style="background:#7cb342;" onclick="setPresetColor('#7cb342')" title="Light Green"></div>
-                <div class="color-dot" style="background:#c0ca33;" onclick="setPresetColor('#c0ca33')" title="Lime"></div>
-                <div class="color-dot" style="background:#d4af37;" onclick="setPresetColor('#d4af37')" title="Metallic Gold"></div>
-                <div class="color-dot" style="background:#b8860b;" onclick="setPresetColor('#b8860b')" title="Dark Golden"></div>
-                <div class="color-dot" style="background:#a0522d;" onclick="setPresetColor('#a0522d')" title="Sienna"></div>
-                <div class="color-dot" style="background:#808080;" onclick="setPresetColor('#808080')" title="Grey"></div>
-                <div class="color-dot" style="background:#90a4ae;" onclick="setPresetColor('#90a4ae')" title="Blue Grey"></div>
-                <div class="color-dot" style="background:#78909c;" onclick="setPresetColor('#78909c')" title="Slate"></div>
-                <input type="color" id="setThemeColor" style="width:100%; height:100%; border:none; background:transparent; cursor:pointer; grid-column: span 1;" oninput="applySettings()" title="Custom Color">
-            </div>
-        </div>
-
-        <hr style="border-color:#333;">
-
-        <div class="setting-row">
-            <span>Dashboard பாக்ஸ் காட்டு</span>
-            <label class="switch"><input type="checkbox" id="switchDash" checked onchange="applySettings()"><span class="slider"></span></label>
-        </div>
-
-        <div class="setting-row">
-            <span>Search பார் காட்டு</span>
-            <label class="switch"><input type="checkbox" id="switchSearch" checked onchange="applySettings()"><span class="slider"></span></label>
-        </div>
-
-        <hr style="border-color:#333;">
-        
-        <button style="background:#e53935; color:white; width:100%; margin-top:5px; padding:12px; font-weight:bold; border:none; border-radius:10px; cursor:pointer;" onclick="allDeleteWithExport()">⚠️ All Delete</button>
-        <button class="gold" style="width:100%; margin-top:12px; padding:12px;" onclick="closeSettingsPopup()">Done</button>
-    </div>
-</div>
-
-<div id="entryPopup" class="popup-overlay">
-    <div class="popup-content">
-        <h3 style="color:var(--theme-color); margin-top:0;">New Entry</h3>
-        <input type="date" id="tDate">
-        <input type="text" id="tDesc" placeholder="Description">
-        <input type="number" id="tCredit" placeholder="Credit">
-        <input type="number" id="tDebit" placeholder="Debit">
-        <div style="display:flex; gap:10px; margin-top:10px;">
-            <button class="gold" onclick="saveTransaction()" style="flex:1;">Save</button>
-            <button style="background:#555; color:white; flex:1;" onclick="closeEntryForm()">Close</button>
+        <!-- Index List Section -->
+        <div id="indexListSection" class="index-list" style="display: none;">
+            <label style="margin-bottom: 8px; font-weight: bold; color: #00bcd4;">சேமிக்கப்பட்ட பதிவுகள் (Click to View):</label>
+            <div id="indexContainer"></div>
         </div>
     </div>
-</div>
 
-<div id="actionPopup" class="popup-overlay" onclick="closeActionPopup()">
-    <div class="popup-content" onclick="event.stopPropagation()">
-        <h3 id="popupTitle" style="color:var(--theme-color); margin-top:0;">Manage User</h3>
-        <button class="gold" id="editBtn" style="width:100%; padding:12px; font-weight:bold; border:none; border-radius:10px; cursor:pointer;">✏️ Edit User</button><br>
-        <button style="background:#e53935; color:white; width:100%; margin-top:10px; padding:12px; font-weight:bold; border:none; border-radius:10px; cursor:pointer;" id="deleteBtn">🗑️ Delete User</button><br>
-        <button style="background:#555; color:white; width:100%; margin-top:10px; padding:12px; border:none; border-radius:10px; cursor:pointer;" onclick="closeActionPopup()">Cancel</button>
+    <!-- Modal Popup for Detailed View -->
+    <div id="modalOverlay">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal()">&times;</span>
+            <div id="modalBody"></div>
+        </div>
     </div>
-</div>
 
-<div id="txActionPopup" class="popup-overlay" onclick="closeTxActionPopup()">
-    <div class="popup-content" onclick="event.stopPropagation()">
-        <h3 style="color:var(--theme-color); margin-top:0;">டிரான்ஸாக்ஷன் மேலாண்மை</h3>
-        <button class="gold" id="txEditBtn" style="width:100%;">✏️ Edit Entry</button><br>
-        <button style="background:#e53935; color:white; width:100%; margin-top:10px;" id="txDeleteBtn">🗑️ Delete Entry</button><br>
-        <button style="background:#555; color:white; width:100%; margin-top:10px;" onclick="closeTxActionPopup()">Cancel</button>
-    </div>
-</div>
+    <div id="toast">Copied Success!</div>
 
-<script>
-const CLOUD_URL = "https://script.google.com/macros/s/AKfycbw9ee1RT6WeBnLB9SujBNOKoEV20H94lvrTD4yUJd_bU_8dn38QbFGy4_9ZGjx80neC/exec";
+    <script>
+        let allRecords = [];
 
-let users = [];
-let appConfig = JSON.parse(localStorage.getItem("financeConfig")) || {
-    title: "Finance Manager Pro",
-    width: 500,
-    height: 100,
-    fontSize: 16,
-    fontWeight: "normal",
-    color: "#ffd700",
-    showDash: true,
-    showSearch: true
-};
+        function saveRecord() {
+            const fromVal = document.getElementById('fromInput').value.trim();
+            const toVal = document.getElementById('toInput').value.trim();
 
-let currentUser = null;
-let editIndex = null;
-
-function showLoading(show) {
-    document.getElementById("loading").style.display = show ? "block" : "none";
-}
-
-function initConfig() {
-    document.getElementById("setAppTitle").value = appConfig.title;
-    document.getElementById("setAppWidth").value = appConfig.width;
-    document.getElementById("setAppHeight").value = appConfig.height || 100;
-    document.getElementById("setAppFontSize").value = appConfig.fontSize || 16;
-    document.getElementById("setAppFontWeight").value = appConfig.fontWeight || "normal";
-    document.getElementById("setThemeColor").value = appConfig.color;
-    document.getElementById("switchDash").checked = appConfig.showDash;
-    document.getElementById("switchSearch").checked = appConfig.showSearch;
-    applyConfigUI();
-}
-
-function setPresetColor(colorCode) {
-    document.getElementById("setThemeColor").value = colorCode;
-    applySettings();
-}
-
-function applySettings() {
-    appConfig.title = document.getElementById("setAppTitle").value || "Finance Manager Pro";
-    appConfig.width = document.getElementById("setAppWidth").value;
-    appConfig.height = document.getElementById("setAppHeight").value || 100;
-    appConfig.fontSize = document.getElementById("setAppFontSize").value || 16;
-    appConfig.fontWeight = document.getElementById("setAppFontWeight").value || "normal";
-    appConfig.color = document.getElementById("setThemeColor").value;
-    appConfig.showDash = document.getElementById("switchDash").checked;
-    appConfig.showSearch = document.getElementById("switchSearch").checked;
-    
-    localStorage.setItem("financeConfig", JSON.stringify(appConfig));
-    applyConfigUI();
-}
-
-function applyConfigUI() {
-    document.getElementById("headerTitleText").innerText = appConfig.title;
-    document.getElementById("widthVal").innerText = appConfig.width;
-    document.getElementById("heightVal").innerText = appConfig.height || 100;
-    document.getElementById("fontSizeVal").innerText = appConfig.fontSize || 16;
-    
-    document.documentElement.style.setProperty('--app-width', appConfig.width + 'px');
-    
-    let hVal = appConfig.height || 100;
-    document.documentElement.style.setProperty('--app-height', hVal + 'vh');
-    
-    document.documentElement.style.setProperty('--app-font-size', (appConfig.fontSize || 16) + 'px');
-    document.documentElement.style.setProperty('--app-font-weight', appConfig.fontWeight || 'normal');
-    document.documentElement.style.setProperty('--theme-color', appConfig.color);
-    
-    let hex = appConfig.color;
-    document.documentElement.style.setProperty('--theme-gradient', `linear-gradient(145deg, ${hex}, #333333)`);
-
-    document.getElementById("dashboardWrapper").style.display = appConfig.showDash ? "grid" : "none";
-    document.getElementById("searchBoxWrapper").style.display = appConfig.showSearch ? "block" : "none";
-}
-
-function openSettingsPopup() { document.getElementById("settingsPopup").style.display = "flex"; }
-function closeSettingsPopup() { document.getElementById("settingsPopup").style.display = "none"; }
-
-async function saveToCloudOnly(){ 
-    showLoading(true);
-    try {
-        await fetch(CLOUD_URL, {
-            method: "POST",
-            mode: "no-cors",
-            headers: { "Content-Type": "application/x-www-form-urlencoded" },
-            body: "data=" + encodeURIComponent(JSON.stringify(users))
-        });
-    } catch(e) { console.error(e); }
-    showLoading(false);
-}
-
-async function fetchFromCloud() {
-    showLoading(true);
-    try {
-        let res = await fetch(CLOUD_URL);
-        let cloudData = await res.json();
-        if(cloudData && Array.isArray(cloudData)) {
-            users = cloudData;
-            renderUsers();
-        }
-    } catch(e) { console.error(e); }
-    showLoading(false);
-}
-
-function formatDate(d){ 
-    if(!d) return ""; 
-    let dateStr = String(d).trim();
-    
-    if (dateStr.includes('-T') || (dateStr.includes('-') && dateStr.toUpperCase().includes('T'))) {
-        let upperStr = dateStr.toUpperCase();
-        let tIndex = upperStr.indexOf('T');
-        let datePart = dateStr.substring(0, tIndex);
-        let dayPart = dateStr.substring(tIndex + 1);
-        
-        if(dayPart.includes(':')) {
-            dayPart = dayPart.split(':')[0];
-            let cleanPart = dateStr.split('T')[0];
-            if(cleanPart.includes('-')) {
-                let p = cleanPart.split('-');
-                if(p[0].length === 4) return `${parseInt(p[2],10)}-${parseInt(p[1],10)}-${p[0].substring(2,4)}`;
+            if (fromVal === '' || toVal === '') {
+                alert('தயவுசெய்து From மற்றும் To இடங்களை உள்ளிடவும்!');
+                return;
             }
+
+            let passengers = [];
+            for (let i = 1; i <= 4; i++) {
+                const name = document.getElementById(`p${i}_name`).value.trim();
+                const age = document.getElementById(`p${i}_age`).value.trim();
+                const gender = document.getElementById(`p${i}_gender`).value;
+
+                if (name !== '' && age !== '') {
+                    passengers.push({ name, age, gender });
+                }
+            }
+
+            if (passengers.length === 0) {
+                alert('குறைந்தது ஒரு பயணியின் பெயர் மற்றும் வயதை உள்ளிடவும்!');
+                return;
+            }
+
+            // Save record to array
+            allRecords.push({ from: fromVal, to: toVal, passengers: passengers });
+            renderIndexList();
+
+            // Clear inputs
+            document.getElementById('fromInput').value = '';
+            document.getElementById('toInput').value = '';
+            for (let i = 1; i <= 4; i++) {
+                document.getElementById(`p${i}_name`).value = '';
+                document.getElementById(`p${i}_age`).value = '';
+                document.getElementById(`p${i}_gender`).value = 'ஆண்';
+            }
+            document.getElementById('fromInput').focus();
         }
-        
-        let parts = datePart.split('-');
-        if(parts.length >= 2) {
-            let year = parts[0].substring(2, 4);
-            let month = parseInt(parts[1], 10);
-            let day = parseInt(dayPart, 10);
-            return `${day}-${month}-${year}`;
+
+        function renderIndexList() {
+            const indexContainer = document.getElementById('indexContainer');
+            indexContainer.innerHTML = '';
+            document.getElementById('indexListSection').style.display = 'block';
+
+            allRecords.forEach((record, index) => {
+                const item = document.createElement('div');
+                item.className = 'index-item';
+                item.innerHTML = `<span>பதிவு ${index + 1} (${record.from} ➔ ${record.to})</span> <span>🔍 காண்க</span>`;
+                item.onclick = function() {
+                    openModal(index);
+                };
+                indexContainer.appendChild(item);
+            });
         }
-    }
-    
-    if (dateStr.includes('T') && dateStr.includes('-')) {
-        let parts = dateStr.split('-');
-        if (parts.length === 3) {
-            let dayPart = parts[0].split('T')[0];
-            let month = parseInt(parts[1], 10);
-            let year = parts[2].substring(2, 4); 
-            return `${parseInt(dayPart, 10)}-${month}-${year}`;
-        }
-    }
-    
-    if (dateStr.includes('-')) {
-        let parts = dateStr.split("-");
-        if (parts[0].length === 4) {
-            return `${parseInt(parts[2], 10)}-${parseInt(parts[1], 10)}-${parts[0].substring(2, 4)}`;
-        } else if (parts[2].length === 4) {
-            return `${parseInt(parts[0], 10)}-${parseInt(parts[1], 10)}-${parts[2].substring(2, 4)}`;
-        }
-    }
-    return dateStr;
-}
 
-function getBalance(u){
-    if(!u.transactions) return 0;
-    return u.transactions.reduce((a,t)=>a+(Number(t.credit||0)-Number(t.debit||0)), 0);
-}
-
-// கிரெடிட் அல்லது டெபிட்டில் 00 என்று கொடுத்தால் கூட சிவப்பு நிறம் வராது. வெற்றுப் பதிவாக (Empty String) இருந்தால் மட்டுமே சிவப்பு நிறம் வரும்.
-function isRed(u) {
-    if (!u.transactions || u.transactions.length === 0) return false;
-    let today = new Date().toISOString().split("T")[0];
-    return u.transactions.some(t => {
-        let hasNoCredit = (t.credit === null || t.credit === undefined || String(t.credit).trim() === "");
-        let hasNoDebit = (t.debit === null || t.debit === undefined || String(t.debit).trim() === "");
-        return t.date <= today && hasNoCredit && hasNoDebit;
-    });
-}
-
-function getTenPercent(u) {
-    if(!isRed(u)) return 0;
-    let loan = u.transactions.find(t => Number(t.debit) > 0);
-    return loan ? (Number(loan.debit) * 0.10) : 0;
-}
-
-function renderUsers(){
-    const searchInput = document.getElementById("userSearch");
-    const search = searchInput ? searchInput.value.toLowerCase().trim() : "";
-    const listDiv = document.getElementById("userList");
-    listDiv.innerHTML = "";
-
-    let totalBal = 0, redCount = 0, tenTotal = 0;
-    users.forEach(u => {
-        totalBal += getBalance(u);
-        if(isRed(u)) { redCount++; tenTotal += getTenPercent(u); }
-    });
-
-    document.getElementById("totalUsers").innerText = users.length;
-    document.getElementById("totalBalance").innerText = "₹ " + totalBal.toLocaleString();
-    document.getElementById("redUsersCount").innerText = redCount;
-    document.getElementById("tenPercentTotal").innerText = "₹ " + tenTotal.toLocaleString();
-
-    let filtered = users.filter(u => {
-        let nameMatch = u.name ? String(u.name).toLowerCase().includes(search) : false;
-        let mobileMatch = u.mobile ? String(u.mobile).toLowerCase().includes(search) : false;
-        return nameMatch || mobileMatch;
-    });
-    
-    filtered.sort((a, b) => {
-        let a_red = isRed(a) ? 1 : 0;
-        let b_red = isRed(b) ? 1 : 0;
-        if (a_red !== b_red) { return b_red - a_red; }
-        return Math.abs(getBalance(a)) - Math.abs(getBalance(b));
-    });
-
-    filtered.forEach((u)=>{
-        let realIdx = users.indexOf(u);
-        let card = document.createElement("div");
-        card.className = "user-card" + (isRed(u) ? " redbg" : "");
-        card.onclick = () => openUser(realIdx);
-        
-        card.innerHTML = `
-            <div class="row">
-                <div>
-                    <b>${u.name}</b><br>
-                    <small style="font-size:13px;">${u.mobile || ''}</small>
+        function openModal(index) {
+            const record = allRecords[index];
+            let html = `
+                <h3 style="color: #00bcd4; margin-top:0;">பதிவு ${index + 1} விவரங்கள்</h3>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; background: #3a3a5e; padding: 10px; border-radius: 6px;">
+                    <span><strong>From:</strong> ${record.from} | <strong>To:</strong> ${record.to}</span>
+                    <div>
+                        <button class="copy-btn" onclick="copyText('${record.from}')">Copy From</button>
+                        <button class="copy-btn" onclick="copyText('${record.to}')">Copy To</button>
+                    </div>
                 </div>
-                <div style="font-weight:bold;">₹ ${getBalance(u).toLocaleString()}</div>
-            </div>
-            <button class="menu-dot-btn" onclick="triggerActionMenu(event, ${realIdx}, '${u.name}')">&#8942;</button>
-        `;
-        listDiv.appendChild(card);
-    });
-}
+                <hr style="border:0; border-top:1px solid #444; margin:10px 0;">
+                <label style="font-weight:bold; color:#00bcd4; margin-bottom:10px; display:block;">பயணிகள்:</label>
+            `;
 
-function triggerActionMenu(event, realIdx, name) {
-    event.stopPropagation();
-    openActionPopup(name, realIdx);
-}
+            record.passengers.forEach(p => {
+                html += `
+                    <div class="record-passenger">
+                        <span><strong>${p.name}</strong> (${p.age} / ${p.gender})</span>
+                        <button class="copy-btn" onclick="copyText('${p.name}')">Copy Name</button>
+                    </div>
+                `;
+            });
 
-function openActionPopup(name, realIdx) {
-    document.getElementById("popupTitle").innerText = name;
-    document.getElementById("actionPopup").style.display = "flex";
-    
-    document.getElementById("editBtn").onclick = function() {
-        editUser(realIdx);
-    };
-    document.getElementById("deleteBtn").onclick = function() {
-        deleteUser(realIdx);
-    };
-}
+            document.getElementById('modalBody').innerHTML = html;
+            document.getElementById('modalOverlay').style.display = 'flex';
+        }
 
-function closeActionPopup() {
-    document.getElementById("actionPopup").style.display = "none";
-}
+        function closeModal() {
+            document.getElementById('modalOverlay').style.display = 'none';
+        }
 
-function openUser(i){
-    currentUser = i;
-    document.getElementById("mainScreen").classList.add("hidden");
-    document.getElementById("userScreen").classList.remove("hidden");
-    renderTransactions();
-}
+        function copyText(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                showToast();
+            });
+        }
 
-function setupLongPress(element, callback) {
-    let pressTimer;
-    const start = (e) => { pressTimer = setTimeout(() => callback(), 800); };
-    const cancel = () => { clearTimeout(pressTimer); };
-    element.addEventListener("mousedown", start);
-    element.addEventListener("touchstart", start, { passive: true });
-    element.addEventListener("click", cancel);
-    element.addEventListener("mouseout", cancel);
-    element.addEventListener("touchend", cancel);
-    element.addEventListener("touchcancel", cancel);
-}
-
-function goBack(){
-    document.getElementById("mainScreen").classList.remove("hidden");
-    document.getElementById("userScreen").classList.add("hidden");
-    renderUsers();
-}
-
-function openEntryForm(){ 
-    document.getElementById("tDate").value = new Date().toISOString().split("T")[0];
-    document.getElementById("tDesc").value = "";
-    document.getElementById("tCredit").value = "";
-    document.getElementById("tDebit").value = "";
-    editIndex = null;
-    document.getElementById("entryPopup").style.display = "flex"; 
-}
-function closeEntryForm(){ document.getElementById("entryPopup").style.display = "none"; editIndex = null; }
-
-async function saveTransaction(){
-    let d = document.getElementById("tDate").value, desc = document.getElementById("tDesc").value;
-    let c = document.getElementById("tCredit").value, deb = document.getElementById("tDebit").value;
-    if(!d) return alert("Date is required!");
-
-    let tx = { date: d, desc: desc, credit: c, debit: deb };
-    if(editIndex === null) {
-        users[currentUser].transactions.push(tx);
-    } else {
-        users[currentUser].transactions[editIndex] = tx; 
-        editIndex = null; 
-    }
-
-    closeEntryForm();
-    await saveToCloudOnly();
-    renderTransactions();
-}
-
-function renderTransactions(){
-    let u = users[currentUser];
-    u.transactions.sort((a, b) => new Date(a.date) - new Date(b.date));
-    
-    document.getElementById("profName").innerText = u.name;
-    document.getElementById("profMobile").innerText = u.mobile || "No Mobile";
-    document.getElementById("profBalance").innerText = "Bal: ₹" + getBalance(u).toLocaleString();
-    
-    const tableBody = document.getElementById("transactionTable");
-    tableBody.innerHTML = "";
-    
-    let curBal = 0, display = [];
-    u.transactions.forEach((tx, originalIndex) => {
-        let isNote = (String(tx.credit).trim() === "" && String(tx.debit).trim() === "");
-        if(!isNote) curBal += (Number(tx.credit||0) - Number(tx.debit||0));
-        display.push({ ...tx, cumulative: isNote ? "" : curBal, actualIdx: originalIndex });
-    });
-
-    display.reverse().forEach((tx) => {
-        let row = document.createElement("tr");
-        if(Number(tx.credit) > 0 || tx.credit === "0" || tx.credit === 0) row.className = "credit-row";
-        else if(Number(tx.debit) > 0 || tx.debit === "0" || tx.debit === 0) row.className = "debit-row";
-        else row.className = "pending-row";
-
-        row.innerHTML = `<td>${formatDate(tx.date)}</td>
-                         <td>${tx.desc||""}</td>
-                         <td>${tx.credit||""}</td>
-                         <td>${tx.debit||""}</td>
-                         <td><b>${tx.cumulative}</b></td>`;
-                         
-        setupLongPress(row, () => { openTxActionPopup(tx.actualIdx); });
-        tableBody.appendChild(row);
-    });
-}
-
-function openTxActionPopup(idx) {
-    document.getElementById("txActionPopup").style.display = "flex";
-    document.getElementById("txEditBtn").onclick = () => { closeTxActionPopup(); editTransaction(idx); };
-    document.getElementById("txDeleteBtn").onclick = () => { closeTxActionPopup(); deleteTransaction(idx); };
-}
-function closeTxActionPopup() { document.getElementById("txActionPopup").style.display = "none"; }
-
-function editTransaction(i){
-    let tx = users[currentUser].transactions[i];
-    document.getElementById("tDate").value = tx.date;
-    document.getElementById("tDesc").value = tx.desc || "";
-    document.getElementById("tCredit").value = tx.credit;
-    document.getElementById("tDebit").value = tx.debit;
-    editIndex = i;
-    document.getElementById("entryPopup").style.display = "flex";
-}
-
-async function deleteTransaction(i){ 
-    if(confirm("இந்த எண்ட்ரியை நீக்கவா?")){ 
-        users[currentUser].transactions.splice(i,1); 
-        await saveToCloudOnly(); 
-        renderTransactions(); 
-    } 
-}
-
-async function addUser(){
-    let n=prompt("Name:"), m=prompt("Mobile:");
-    if(n){ 
-        users.push({name:n,mobile:m,transactions:[]}); 
-        await saveToCloudOnly(); 
-        renderUsers(); 
-    }
-}
-async function editUser(i){
-    let currentName = users[i].name; let currentMobile = users[i].mobile;
-    let newName = prompt("Name:", currentName); let newMobile = prompt("Mobile:", currentMobile);
-    if(newName !== null && newName.trim() !== "") users[i].name = newName;
-    if(newMobile !== null) users[i].mobile = newMobile;
-    closeActionPopup();
-    await saveToCloudOnly(); 
-    renderUsers();
-}
-async function deleteUser(i){ 
-    if(confirm("இந்த யூசரை ஆப்பிலிருந்து நிரந்தரமாக நீக்கவா?")){ 
-        users.splice(i,1); 
-        closeActionPopup(); 
-        await saveToCloudOnly(); 
-        renderUsers(); 
-    } 
-}
-
-function exportData(){
-    let a=document.createElement("a");
-    a.href="data:text/json;charset=utf-8,"+encodeURIComponent(JSON.stringify(users));
-    a.download="Finance_Backup_2026.json"; a.click();
-}
-
-function allDeleteWithExport() {
-    if (users.length === 0) {
-        alert("நீக்குவதற்கு டேட்டா எதுவும் இல்லை!");
-        return;
-    }
-    
-    if (confirm("எச்சரிக்கை! அனைத்து யூசர் விவரங்களும் நிரந்தரமாக நீக்கப்படும். நீக்குவதற்கு முன் ஆட்டோமேட்டிக்காக பேக்கப் ஃபைல் டவுன்லோட் செய்யப்படும். தொடரலாமா?")) {
-        let fileName = prompt("பேக்கப் ஃபைல் பெயர் (File Name) what do you want to keep?", "Finance_Backup_All_Delete");
-        
-        if (fileName === null) return; 
-        if (fileName.trim() === "") fileName = "Finance_Backup_All_Delete";
-        
-        let dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(users));
-        let downloadAnchor = document.createElement("a");
-        downloadAnchor.setAttribute("href", dataStr);
-        downloadAnchor.setAttribute("download", fileName + ".json");
-        document.body.appendChild(downloadAnchor);
-        downloadAnchor.click();
-        downloadAnchor.remove();
-        
-        setTimeout(async () => {
-            users = [];
-            showLoading(true);
-            try {
-                await fetch(CLOUD_URL, {
-                    method: "POST",
-                    mode: "no-cors",
-                    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-                    body: "data=" + encodeURIComponent(JSON.stringify([]))
-                });
-            } catch(e) { console.error(e); }
-            showLoading(false);
-            renderUsers();
-            closeSettingsPopup();
-            alert("அனைத்து டேட்டாக்களும் வெற்றிகரமாக எக்ஸ்போர்ட் செய்யப்பட்டு ஆப்பிலிருந்து நீக்கப்பட்டது!");
-        }, 1000); 
-    }
-}
-
-async function importData(event){
-    let f=event.target.files[0]; if(!f) return;
-    let r=new FileReader();
-    r.onload=async function(e){ 
-        users=JSON.parse(e.target.result); 
-        await saveToCloudOnly(); 
-        renderUsers(); 
-    };
-    r.readAsText(f);
-}
-
-window.onload = function() {
-    initConfig();
-    fetchFromCloud();
-};
-</script>
+        function showToast() {
+            const toast = document.getElementById("toast");
+            toast.className = "show";
+            setTimeout(function(){ 
+                toast.className = toast.className.replace("show", ""); 
+            }, 1500);
+        }
+    </script>
 </body>
 </html>
