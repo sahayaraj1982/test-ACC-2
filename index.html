@@ -254,8 +254,8 @@ let db = [];
 let activeFilters = [];
 let currentViewMode = "CR"; 
 
-// உங்கள் Google Apps Script Web App URL நேரடியாக இணைக்கப்பட்டுள்ளது:
-const webAppUrl = "https://script.google.com/macros/s/AKfycbySZecXDODE2zAtxIdJ0CtVGz2dyrsjPhylZUsdgSYX4YGHUctu93JxpYwe5KmqYo1A3w/exec";
+// உங்கள் Google Apps Script Web App URL-ஐ இங்கு நேராக மாற்றிக் கொள்ளவும்:
+const webAppUrl = "YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE";
 
 function init() {
     document.documentElement.style.setProperty('--p-bg', cfg.headCol);
@@ -534,17 +534,24 @@ function getFilteredData() {
     const sM = document.getElementById('sMob').value.trim();
     const sDes = document.getElementById('sDesc').value.toLowerCase().trim();
     
+    // தற்போதைய மாதத்தின் முதல் மற்றும் கடைசித் தேதியைக் கண்டறிதல்
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = now.getMonth();
+    const firstDayCurrentMonth = `${year}-${String(month + 1).padStart(2, '0')}-01`;
+    const lastDayCurrentMonth = new Date(year, month + 1, 0).toISOString().split('T')[0];
+
     return db.filter(t => {
         let cleanTDate = cleanDate(t.date);
         const mCat = (activeFilters.length === 0 || activeFilters.includes(t.cat));
         
-        // தேதிகள் கொடுக்கப்படவில்லை எனில், தற்போதைய மாதத்தின் (Current Month) தரவுகள் மட்டும் காட்டும்
-        const now = new Date();
-        const currentYearMonth = now.toISOString().slice(0, 7); // எ.கா: "2026-08"
-        
-        const mDate = (fD || tD) ? 
-            ((!fD || cleanTDate >= fD) && (!tD || cleanTDate <= tD)) : 
-            cleanTDate.startsWith(currentYearMonth);
+        // தேதிகள் கொடுக்கப்பட்டிருந்தால் அதன்படி ஃபில்டர் ஆகும். இல்லையெனில் தற்போதைய மாதத்தின் தரவுகள் மட்டும் காட்டப்படும்.
+        let mDate = false;
+        if (fD || tD) {
+            mDate = ((!fD || cleanTDate >= fD) && (!tD || cleanTDate <= tD));
+        } else {
+            mDate = (cleanTDate >= firstDayCurrentMonth && cleanTDate <= lastDayCurrentMonth);
+        }
             
         const itemMob = t.mob ? String(t.mob).trim() : "";
         const mMob = (!sM || itemMob.includes(sM));
@@ -741,7 +748,7 @@ function doPost(e) {
 }`;
 
     navigator.clipboard.writeText(scriptCode).then(() => {
-        alert("Google Apps Script Code Copied Successfully!");
+        alert("Google Apps Script Code Copied Successfully! Now paste it into your Google Sheet Script Editor and deploy as Web App.");
     }).catch(err => {
         alert("Failed to copy script code.");
     });
