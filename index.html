@@ -534,18 +534,20 @@ function getFilteredData() {
     const sM = document.getElementById('sMob').value.trim();
     const sDes = document.getElementById('sDesc').value.toLowerCase().trim();
     
-    // தற்போதைய மாதத்தின் முதல் மற்றும் கடைசித் தேதியைக் கண்டறிதல்
+    // 1. நடப்பாண்டு மற்றும் நடப்பு மாதத்தின் முதல் தேதியைக் கண்டறிதல்
     const now = new Date();
     const year = now.getFullYear();
     const month = now.getMonth();
     const firstDayCurrentMonth = `${year}-${String(month + 1).padStart(2, '0')}-01`;
+    
+    // 2. நடப்பு மாதத்தின் கடைசித் தேதியைக் கண்டறிதல்
     const lastDayCurrentMonth = new Date(year, month + 1, 0).toISOString().split('T')[0];
 
     return db.filter(t => {
         let cleanTDate = cleanDate(t.date);
         const mCat = (activeFilters.length === 0 || activeFilters.includes(t.cat));
         
-        // தேதிகள் கொடுக்கப்பட்டிருந்தால் அதன்படி ஃபில்டர் ஆகும். இல்லையெனில் தற்போதைய மாதத்தின் தரவுகள் மட்டும் காட்டப்படும்.
+        // 3. தேதி கொடுக்கப்பட்டிருந்தால் அதன்படி, இல்லையெனில் நடப்பு மாதத் தரவுகள் மட்டும்
         let mDate = false;
         if (fD || tD) {
             mDate = ((!fD || cleanTDate >= fD) && (!tD || cleanTDate <= tD));
@@ -564,7 +566,6 @@ function getFilteredData() {
         return mCat && mDate && mMob && mDesc && mView;
     });
 }
-
 function openSettings() { 
     document.getElementById('setModal').classList.remove('hidden');
     document.getElementById('setHeadCol').value = cfg.headCol;
